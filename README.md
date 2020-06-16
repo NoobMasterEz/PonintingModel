@@ -6,3 +6,4 @@ Unfortunately, it is arbitrarily difficult to make the mechanical system match a
 coordinate system. Before the advent of computers, the precision of pointing and tracking
 was limited by the alignment of the mechanical system to the celestial sphere. Now that
 substantial computing power exists to control and operate telescopes
+ref : https://www.boulder.swri.edu/~buie/idl/downloads/pointing/pointing.pdf

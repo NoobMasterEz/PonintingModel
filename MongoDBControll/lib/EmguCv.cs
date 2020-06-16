@@ -34,7 +34,10 @@ namespace MongoDBControll.lib
         /// <param name="namefile">location file </param>
         public void CreateImag(string namefile)
         {
-            Matrix<byte> image = FitsFile.GenerateImage(namefile);
+            ushort[][] image = FitsFile.GenerateImage(namefile);
+
+
+
             //Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, 1824, 2318);
             //Image<Bgr, byte> emguImg = imgJPG.Mat.ToImage<Bgr, byte>();
             //this.newimage = imagemat.ToImage<Emgu.CV.Structure.Bgr, byte>(); // img to bgr

@@ -1,2 +1,4 @@
+# Pointing Model API Telescope from Thailand
+
 <p align="center">
-  <img src="https://www.spiedigitallibrary.org/ContentImages/Journals/JATIAG/4/3/034002/FigureImages/JATIS_4_3_034002_f001.png" width="200" title="hover text">
+  <img src="https://www.researchgate.net/profile/Tushar_Prabhu/publication/257561749/figure/fig5/AS:668567905239059@1536410418786/Scatter-diagram-of-pointing-data-of-bright-stars-observed-by-guide-telescopes-left-and.png" width="200" title="hover text">

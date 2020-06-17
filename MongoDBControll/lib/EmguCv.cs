@@ -26,6 +26,42 @@ namespace MongoDBControll.lib
         {
 
         }
+
+        public static Bitmap MakeGrayscale3(Bitmap original)
+        {
+            //create a blank bitmap the same size as original
+            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+
+            //get a graphics object from the new image
+            using (Graphics g = Graphics.FromImage(newBitmap))
+            {
+
+                //create the grayscale ColorMatrix
+                ColorMatrix colorMatrix = new ColorMatrix(
+                   new float[][]
+                   {
+             new float[] {.3f, .3f, .3f, 0, 0},
+             new float[] {.59f, .59f, .59f, 0, 0},
+             new float[] {.11f, .11f, .11f, 0, 0},
+             new float[] {0, 0, 0, 1, 0},
+             new float[] {0, 0, 0, 0, 1}
+                   });
+
+                //create some image attributes
+                using (ImageAttributes attributes = new ImageAttributes())
+                {
+
+                    //set the color matrix attribute
+                    attributes.SetColorMatrix(colorMatrix);
+
+                    //draw the original image on the new image
+                    //using the grayscale color matrix
+                    g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+                                0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
+                }
+            }
+            return newBitmap;
+        }
         /// <summary>
         ///  this fuction build 2 value 
         ///  - newimage (bgr)
@@ -34,31 +70,27 @@ namespace MongoDBControll.lib
         /// <param name="namefile">location file </param>
         public void CreateImag(string namefile)
         {
-            ushort[][] image = FitsFile.GenerateImage(namefile);
-            Matrix<ushort> result = new Matrix<ushort>(4096, 4096);
-            for(int i=0; i<4096;i++)
-            {
-                for(int j=0;j<4096;j++)
-                {
-                    result.Data[i, j] = image[i][j];
+            Matrix<ushort> image = FitsFile.GenerateImage(namefile);
+         
 
-                }
-            }
-            string extension = ".png";
+            //ushort LowerValue, UpperValue;
+            //double LowerPercen, UpperPercen;
 
-            ushort LowerValue, UpperValue;
-            double LowerPercen, UpperPercen;
-            
-            FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
-            FitsFile.GetUpperAndLowerShortBit(result, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
-            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(result, LowerValue, UpperValue);
-            Image<Bgr, byte> emguImg = imgJPG.Mat.ToImage<Bgr, byte>();
-            ImageViewer.Show(emguImg);
+            //FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
+            //FitsFile.GetUpperAndLowerShortBit(result, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
+            //Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(result, LowerValue, UpperValue);
+            //Image<Bgr, byte> imagemat = imgJPG.Mat.ToImage<Bgr, byte>();
+            Image<Bgr, ushort> newlayer = image.Mat.ToImage<Bgr, ushort>();
+            //this.newimage = newlayer;
             //this.newimage = imagemat.ToImage<Emgu.CV.Structure.Bgr, byte>(); // img to bgr
-            //this.gray = this.imagemat.ToImage<Emgu.CV.Structure.Gray, byte>(); // img to gray 
+            //this.gray = imagemat.ToImage<Emgu.CV.Structure.Gray, byte>(); // img to gray 
+            this.gray = newlayer.Convert<Gray, Byte>();
+            ImageViewer.Show(newlayer);
+
+
         }
 
-        
+
 
 
         /// <summary>

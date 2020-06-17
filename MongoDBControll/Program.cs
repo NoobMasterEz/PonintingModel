@@ -27,9 +27,9 @@ namespace MongoDBControll.lib
             EmguCv test1 = new EmguCv();
             test1.CreateImag(Fits);
 
-            //Image<Emgu.CV.Structure.Gray, byte> step1 = test1.Thresholding(190, 255, Emgu.CV.CvEnum.ThresholdType.Binary | Emgu.CV.CvEnum.ThresholdType.Otsu);
-            //test1.HouCircles(Emgu.CV.CvEnum.HoughType.Gradient,10,1,65,65,1,30);
-            //test1.SegmentionWatershed();
+            Image<Emgu.CV.Structure.Gray, byte> step1 = test1.Thresholding(190, 255, Emgu.CV.CvEnum.ThresholdType.Binary | Emgu.CV.CvEnum.ThresholdType.Otsu);
+            test1.HouCircles(Emgu.CV.CvEnum.HoughType.Gradient,10,1,65,65,1,30);
+            test1.SegmentionWatershed();
             
 
 #if DEBUG

@@ -14,16 +14,17 @@ namespace MongoDBControll.lib
         {
 
         }
-        public static ushort[][] GenerateImage(string pathfitsfile)
+        public static Matrix<ushort> GenerateImage(string pathfitsfile)
         {
            
             Fits fits = new Fits(pathfitsfile);
             
             ImageHDU basichdu = (ImageHDU)fits.ReadHDU();
             Array[] img = (Array[])basichdu.Kernel;
-
+            
             int row = basichdu.Header.GetIntValue("NAXIS1");
             int colum = basichdu.Header.GetIntValue("NAXIS2");
+            Matrix<ushort> result = new Matrix<ushort>(row, colum);
             ushort[][] newimage = new ushort[row][];
             
             for (int i = 0; i < colum; i++)
@@ -37,8 +38,18 @@ namespace MongoDBControll.lib
                 }
 
             }
+
             
-            return newimage;
+            for (int i = 0; i < colum; i++)
+            {
+                for (int j = 0; j < row; j++)
+                {
+                    result.Data[i, j] = newimage[i][j];
+
+                }
+            }
+
+            return result;
         }
         public static void GetUpperAndLower8Bit(Matrix<Byte> CVMat, out Byte LowerValue, out Byte UpperValue, Double LowerPercen, Double UpperPercen)
         {
@@ -162,7 +173,7 @@ namespace MongoDBControll.lib
 
         public static void GetStrecthProfile(out Double LowerPercen, out Double UpperPercen)
         {
-            String StretchProfile = "Max Value";
+            String StretchProfile = "medium";
 
             if (StretchProfile == "low")
             {

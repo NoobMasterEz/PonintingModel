@@ -82,3 +82,4 @@ C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\OpenCvSharp.Extensions.
 C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\OpenCvSharp.xml
 C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\OpenCvSharp.Blob.xml
 C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\OpenCvSharp.Extensions.xml
+C:\Users\specter\Desktop\Mongo\MongoDBControll\obj\Debug\MongoDBControll.sourcelink.json

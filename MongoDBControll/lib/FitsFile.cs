@@ -14,7 +14,7 @@ namespace MongoDBControll.lib
         {
 
         }
-        public static Matrix<byte> GenerateImage(string pathfitsfile)
+        public static ushort[][] GenerateImage(string pathfitsfile)
         {
            
             Fits fits = new Fits(pathfitsfile);
@@ -24,18 +24,20 @@ namespace MongoDBControll.lib
 
             int row = basichdu.Header.GetIntValue("NAXIS1");
             int colum = basichdu.Header.GetIntValue("NAXIS2");
-            Matrix<byte> newimage = new Matrix<byte>(row,colum);
+            ushort[][] newimage = new ushort[row][];
             
             for (int i = 0; i < colum; i++)
             {
+                newimage[i] = new ushort[colum];
 
+                short[] value = (short[])img[i];
                 for(int j=0; j < row; j++)
                 {
-                    Console.WriteLine(img[i]);
-                    //newimage.Data[i,j] = (short)img[i + j];
+                    newimage[i][j] = (ushort)(value[j] + 32767);
                 }
 
             }
+            
             return newimage;
         }
         public static void GetUpperAndLower8Bit(Matrix<Byte> CVMat, out Byte LowerValue, out Byte UpperValue, Double LowerPercen, Double UpperPercen)
@@ -79,7 +81,7 @@ namespace MongoDBControll.lib
             UpperValue = DataList[UpperPosition == DataLength ? UpperPosition - 1 : UpperPosition];
         }
 
-        /*
+        
         public static Matrix<UInt16> StretchImageU16Bit(Matrix<UInt16> UInt16Image, UInt16 MinVal, UInt16 MaxVal)
         {
             UInt16 Devider = Convert.ToUInt16(Math.Abs((UInt16)MaxVal - (UInt16)MinVal));
@@ -88,7 +90,7 @@ namespace MongoDBControll.lib
             Matrix<UInt16> NewImg = (((UInt16Image - (UInt16)MinVal) / Devider * (UInt16)65535));
             return NewImg;
         }
-        */
+        
 
         public static void GetUpperAndLower32Bit(Matrix<int> CVMat, out int LowerValue, out int UpperValue, Double LowerPercen, Double UpperPercen)
         {
@@ -215,6 +217,7 @@ namespace MongoDBControll.lib
             UpperValue = DataList[UpperPosition == DataLength ? UpperPosition - 1 : UpperPosition];
         }
 
+        /*
         public static Matrix<UInt16> StretchImageU16Bit(Matrix<UInt16> UInt16Image, UInt16 MinVal, UInt16 MaxVal)
         {
             Double A = (Double)ushort.MinValue;
@@ -232,7 +235,7 @@ namespace MongoDBControll.lib
             //Matrix<UInt16> NewImg = (((UInt16Image - (Double)MinVal) / Devider) * (Double)ushort.MaxValue);
             return NewImg;
         }
-
+        */
     }
     
 }

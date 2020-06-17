@@ -46,8 +46,12 @@ namespace MongoDBControll.lib
             }
             string extension = ".png";
 
+            ushort LowerValue, UpperValue;
+            double LowerPercen, UpperPercen;
             
-            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(result, 1824, 4960);
+            FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
+            FitsFile.GetUpperAndLowerShortBit(result, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
+            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(result, LowerValue, UpperValue);
             Image<Bgr, byte> emguImg = imgJPG.Mat.ToImage<Bgr, byte>();
             ImageViewer.Show(emguImg);
             //this.newimage = imagemat.ToImage<Emgu.CV.Structure.Bgr, byte>(); // img to bgr

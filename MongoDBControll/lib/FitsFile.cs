@@ -162,7 +162,7 @@ namespace MongoDBControll.lib
 
         public static void GetStrecthProfile(out Double LowerPercen, out Double UpperPercen)
         {
-            String StretchProfile = "medium";
+            String StretchProfile = "Max Value";
 
             if (StretchProfile == "low")
             {

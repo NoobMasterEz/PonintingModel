@@ -41,6 +41,7 @@ namespace MongoDBControll.lib
                 for(int j=0;j<4096;j++)
                 {
                     result.Data[i, j] = image[i][j];
+
                 }
             }
             string extension = ".png";

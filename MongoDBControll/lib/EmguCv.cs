@@ -27,41 +27,7 @@ namespace MongoDBControll.lib
 
         }
 
-        public static Bitmap MakeGrayscale3(Bitmap original)
-        {
-            //create a blank bitmap the same size as original
-            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
-
-            //get a graphics object from the new image
-            using (Graphics g = Graphics.FromImage(newBitmap))
-            {
-
-                //create the grayscale ColorMatrix
-                ColorMatrix colorMatrix = new ColorMatrix(
-                   new float[][]
-                   {
-             new float[] {.3f, .3f, .3f, 0, 0},
-             new float[] {.59f, .59f, .59f, 0, 0},
-             new float[] {.11f, .11f, .11f, 0, 0},
-             new float[] {0, 0, 0, 1, 0},
-             new float[] {0, 0, 0, 0, 1}
-                   });
-
-                //create some image attributes
-                using (ImageAttributes attributes = new ImageAttributes())
-                {
-
-                    //set the color matrix attribute
-                    attributes.SetColorMatrix(colorMatrix);
-
-                    //draw the original image on the new image
-                    //using the grayscale color matrix
-                    g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
-                                0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
-                }
-            }
-            return newBitmap;
-        }
+        
         public Matrix<int> Convert1628(Matrix<ushort> imageinput)
         {
             Matrix<int> result = new Matrix<int>(imageinput.Rows, imageinput.Cols);
@@ -83,24 +49,25 @@ namespace MongoDBControll.lib
         /// <param name="namefile">location file </param>
         public void CreateImag(string namefile)
         {
-            Matrix<ushort> image = FitsFile.GenerateImage(namefile);
+            //Matrix<ushort> image = FitsFile.GenerateImage(namefile);
 
-            Matrix<int> image8bit = Convert1628(image);
-            /*
-            ushort LowerValue, UpperValue;
-            double LowerPercen, UpperPercen;
+            //Matrix<int> image8bit = Convert1628(image);
 
-            FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
-            FitsFile.GetUpperAndLowerShortBit(image, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
-            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
-            Image<Bgr, byte> imagemat = imgJPG.Mat.ToImage<Bgr, byte>();
-            */
-            Image<Bgr, byte> newlayer = image8bit.Mat.ToImage<Bgr, byte>();
-            this.newimage = newlayer;
-            //this.newimage = imagemat.ToImage<Emgu.CV.Structure.Bgr, byte>(); // img to bgr
-            //this.gray = imagemat.ToImage<Emgu.CV.Structure.Gray, byte>(); // img to gray 
-            this.gray = newlayer.Convert<Gray, Byte>();
-            ImageViewer.Show(this.gray);
+            //ushort LowerValue, UpperValue;
+            //double LowerPercen, UpperPercen;
+
+            //FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
+            //FitsFile.GetUpperAndLowerShortBit(image, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
+            //Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
+            Mat imgJPG = CvInvoke.Imread(namefile);
+            Image<Bgr, byte> imagemat = imgJPG.ToImage<Bgr, byte>();
+            ImageViewer.Show(imagemat);
+            //Image<Bgr, byte> newlayer = imagemat.Mat.ToImage<Bgr, byte>();
+            //this.newimage = newlayer;
+            this.newimage = imagemat; // img to bgr
+            //this.gray = imagemat.ToImage<Gray, byte>(); // img to gray 
+            this.gray = imagemat.Convert<Gray, Byte>();
+
 
 
 
@@ -126,7 +93,7 @@ namespace MongoDBControll.lib
         }
 
 
-        public void SegmentionWatershed()
+        public void SegmentionWatershed(int threshmin)
         {
             //Mat3b src = imread("path_to_image");
             double[] min, max;
@@ -137,8 +104,8 @@ namespace MongoDBControll.lib
             Image<Gray, float> thresh2 = new Image<Gray, float>(gray.Width, gray.Height);
 
             //threshold(gray, thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
-            CvInvoke.Threshold(gray, thresh, 20, 255, ThresholdType.Binary);
-            
+            CvInvoke.Threshold(gray.SmoothGaussian(3), thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
+
             
             // noise removal
             Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
@@ -155,8 +122,9 @@ namespace MongoDBControll.lib
 
             dist_transform.MinMax(out min, out max, out pmin, out pmax);
             //Console.WriteLine(max[0]);
-            CvInvoke.Threshold(dist_transform,thresh2, max[0]*0.2, 255,0);
-            Image<Gray, Byte> dist_8u = thresh2.Convert<Gray, Byte>();           
+            CvInvoke.Threshold(dist_transform,thresh2, max[0]*0.1, 255,0);
+            Image<Gray, Byte> dist_8u = thresh2.Convert<Gray, Byte>();
+            ImageViewer.Show(dist_8u);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             //Mat hierarchy = new Mat() ;
             CvInvoke.FindContours(dist_8u, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);

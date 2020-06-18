@@ -11,7 +11,7 @@ namespace MongoDBControll.lib
 {
     class Program
     {
-        private const string Namefile = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_06_03T17.55.34.602Z_V.jpg";
+        private const string Namefile = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_06_16T11.59.34.943Z_V.jpg";
         private const string Namefilfits = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_06_15T07.35.12.937Z_B.fits";
 
         public static string Namefile1 => Namefile;
@@ -25,11 +25,11 @@ namespace MongoDBControll.lib
 
             
             EmguCv test1 = new EmguCv();
-            test1.CreateImag(Fits);
+            test1.CreateImag(Namefile1);
 
             Image<Emgu.CV.Structure.Gray, byte> step1 = test1.Thresholding(9 , 255, Emgu.CV.CvEnum.ThresholdType.Binary );
             test1.HouCircles(Emgu.CV.CvEnum.HoughType.Gradient,10,1,65,65,1,30);
-            test1.SegmentionWatershed();
+            test1.SegmentionWatershed(7);
             
 
 #if DEBUG

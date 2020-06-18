@@ -62,6 +62,19 @@ namespace MongoDBControll.lib
             }
             return newBitmap;
         }
+        public Matrix<int> Convert1628(Matrix<ushort> imageinput)
+        {
+            Matrix<int> result = new Matrix<int>(imageinput.Rows, imageinput.Cols);
+            for(int i =0; i < imageinput.Cols;i++)
+            {
+                for(int j =0; j < imageinput.Rows;j++)
+                {
+                    result.Data[i,j]=(int) imageinput.Data[i, j] / 255;
+                }
+            }
+            
+            return result;
+        }
         /// <summary>
         ///  this fuction build 2 value 
         ///  - newimage (bgr)
@@ -71,21 +84,24 @@ namespace MongoDBControll.lib
         public void CreateImag(string namefile)
         {
             Matrix<ushort> image = FitsFile.GenerateImage(namefile);
-         
 
-            //ushort LowerValue, UpperValue;
-            //double LowerPercen, UpperPercen;
+            Matrix<int> image8bit = Convert1628(image);
+            /*
+            ushort LowerValue, UpperValue;
+            double LowerPercen, UpperPercen;
 
-            //FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
-            //FitsFile.GetUpperAndLowerShortBit(result, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
-            //Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(result, LowerValue, UpperValue);
-            //Image<Bgr, byte> imagemat = imgJPG.Mat.ToImage<Bgr, byte>();
-            Image<Bgr, ushort> newlayer = image.Mat.ToImage<Bgr, ushort>();
-            //this.newimage = newlayer;
+            FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
+            FitsFile.GetUpperAndLowerShortBit(image, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
+            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
+            Image<Bgr, byte> imagemat = imgJPG.Mat.ToImage<Bgr, byte>();
+            */
+            Image<Bgr, byte> newlayer = image8bit.Mat.ToImage<Bgr, byte>();
+            this.newimage = newlayer;
             //this.newimage = imagemat.ToImage<Emgu.CV.Structure.Bgr, byte>(); // img to bgr
             //this.gray = imagemat.ToImage<Emgu.CV.Structure.Gray, byte>(); // img to gray 
             this.gray = newlayer.Convert<Gray, Byte>();
-            ImageViewer.Show(newlayer);
+            ImageViewer.Show(this.gray);
+
 
 
         }
@@ -105,8 +121,7 @@ namespace MongoDBControll.lib
             
             this.thresholdimage = this.gray.CopyBlank(); //coppy gray to result thresholding
             ///
-            CvInvoke.Threshold(gray.SmoothGaussian(3), this.thresholdimage, 125, 255, nametype);
-          
+            CvInvoke.Threshold(gray, this.thresholdimage, min, max, nametype);
             return this.thresholdimage;
         }
 
@@ -122,14 +137,16 @@ namespace MongoDBControll.lib
             Image<Gray, float> thresh2 = new Image<Gray, float>(gray.Width, gray.Height);
 
             //threshold(gray, thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
-            CvInvoke.Threshold(gray, thresh, 190, 255, ThresholdType.Binary | ThresholdType.Otsu);
-
+            CvInvoke.Threshold(gray, thresh, 20, 255, ThresholdType.Binary);
+            
+            
             // noise removal
             Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
 
             //Mat1b opening;
             //morphologyEx(thresh, opening, MORPH_OPEN, kernel, Point(-1, -1), 2);
             Image<Gray, byte> opening = thresh.MorphologyEx(MorphOp.Open, kernel, new Point(1, 1), 2, BorderType.Default, new MCvScalar(255));
+            
             Image<Gray, byte> sure_bg = opening.Dilate(3);
             Image<Gray, float> dist_transform = new Image<Gray, float>(opening.Width, opening.Height);
             CvInvoke.DistanceTransform(opening, dist_transform, null, DistType.L2 , 5);

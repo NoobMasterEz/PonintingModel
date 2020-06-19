@@ -49,9 +49,9 @@ namespace MongoDBControll.lib
         /// <param name="namefile">location file </param>
         public void CreateImag(string namefile)
         {
-            //Matrix<ushort> image = FitsFile.GenerateImage(namefile);
+            Matrix<ushort> image = FitsFile.GenerateImage(namefile);
 
-            //Matrix<int> image8bit = Convert1628(image);
+            Matrix<int> image8bit = Convert1628(image);
 
             //ushort LowerValue, UpperValue;
             //double LowerPercen, UpperPercen;
@@ -59,14 +59,15 @@ namespace MongoDBControll.lib
             //FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
             //FitsFile.GetUpperAndLowerShortBit(image, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
             //Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
-            Mat imgJPG = CvInvoke.Imread(namefile);
-            Image<Bgr, byte> imagemat = imgJPG.ToImage<Bgr, byte>();
-            ImageViewer.Show(imagemat);
-            //Image<Bgr, byte> newlayer = imagemat.Mat.ToImage<Bgr, byte>();
-            //this.newimage = newlayer;
-            this.newimage = imagemat; // img to bgr
+            //Mat imgJPG = CvInvoke.Imread(namefile);
+            //Image<Bgr, byte> imagemat = imgJPG.ToImage<Bgr, byte>();
+           
+            //ImageViewer.Show(imagemat);
+            Image<Bgr, byte> newlayer = image8bit.Mat.ToImage<Bgr, byte>();
+            this.newimage = newlayer;
+            //this.newimage = imagemat; // img to bgr
             //this.gray = imagemat.ToImage<Gray, byte>(); // img to gray 
-            this.gray = imagemat.Convert<Gray, Byte>();
+            this.gray = newlayer.Convert<Gray, Byte>();
 
 
 
@@ -124,7 +125,7 @@ namespace MongoDBControll.lib
             //Console.WriteLine(max[0]);
             CvInvoke.Threshold(dist_transform,thresh2, max[0]*0.1, 255,0);
             Image<Gray, Byte> dist_8u = thresh2.Convert<Gray, Byte>();
-            ImageViewer.Show(dist_8u);
+            //ImageViewer.Show(dist_8u);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             //Mat hierarchy = new Mat() ;
             CvInvoke.FindContours(dist_8u, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
@@ -135,7 +136,7 @@ namespace MongoDBControll.lib
                  this.newimage.Draw(r,new Bgr(Color.Red));
              
                }
-            ImageViewer.Show(this.newimage);
+            //ImageViewer.Show(this.newimage);
            
             
         }

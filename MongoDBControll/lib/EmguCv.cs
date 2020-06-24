@@ -22,6 +22,7 @@ namespace MongoDBControll.lib
         private Image<Bgr, byte> newimage;
         private Image<Emgu.CV.Structure.Gray, byte> gray;
         private Image<Emgu.CV.Structure.Gray, byte> thresholdimage;
+        
         public EmguCv()
         {
 
@@ -41,29 +42,37 @@ namespace MongoDBControll.lib
             
             return result;
         }
+
+
+
         /// <summary>
         ///  this fuction build 2 value 
         ///  - newimage (bgr)
         ///  - gray 
         /// </summary>
         /// <param name="namefile">location file </param>
-        public void CreateImag(string namefile)
+        public void CreateImag(Image<Bgr, byte> file)
         {
-            Matrix<ushort> image = FitsFile.GenerateImage(namefile);
+            if (file is null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            //Matrix<ushort> image = FitsFile.GenerateImage(file);
 
-            Matrix<int> image8bit = Convert1628(image);
+            //Matrix<int> image8bit = Convert1628(image);
+            /*
+            ushort LowerValue, UpperValue;
+            double LowerPercen, UpperPercen;
 
-            //ushort LowerValue, UpperValue;
-            //double LowerPercen, UpperPercen;
-
-            //FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
-            //FitsFile.GetUpperAndLowerShortBit(image, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
-            //Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
-            //Mat imgJPG = CvInvoke.Imread(namefile);
-            //Image<Bgr, byte> imagemat = imgJPG.ToImage<Bgr, byte>();
-           
-            //ImageViewer.Show(imagemat);
+            FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
+            FitsFile.GetUpperAndLowerShortBit(image, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
+            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
+            Mat imgJPG = CvInvoke.Imread(namefile);
+            Image<Bgr, byte> imagemat = imgJPG.ToImage<Bgr, byte>();
             Image<Bgr, byte> newlayer = image8bit.Mat.ToImage<Bgr, byte>();
+           */
+            //ImageViewer.Show(imagemat);
+            Image<Bgr, byte> newlayer = file;
             this.newimage = newlayer;
             //this.newimage = imagemat; // img to bgr
             //this.gray = imagemat.ToImage<Gray, byte>(); // img to gray 
@@ -94,7 +103,7 @@ namespace MongoDBControll.lib
         }
 
 
-        public void SegmentionWatershed(int threshmin)
+        public Tuple<Image<Bgr,byte>,int> SegmentionWatershed(int threshmin)
         {
             //Mat3b src = imread("path_to_image");
             double[] min, max;
@@ -137,9 +146,14 @@ namespace MongoDBControll.lib
              
                }
             //ImageViewer.Show(this.newimage);
-           
-            
-        }
+
+            return Tuple.Create(this.newimage, contours.Size);       
+                
+         }
+
+
+
+
         /// <summary>
         /// 
         /// </summary>

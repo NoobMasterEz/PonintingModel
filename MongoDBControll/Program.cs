@@ -9,6 +9,8 @@ using System.IO;
 using MongoDB.Driver;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
+using System.Windows.Forms;
+
 namespace MongoDBControll.lib
 {
     class Program
@@ -18,6 +20,8 @@ namespace MongoDBControll.lib
 
         public static string Namefile1 => Namefile;
         public static string Fits => Namefilfits;
+
+        [STAThread]
         static void Main(string[] args)
         {
             //Data Base 
@@ -44,9 +48,12 @@ namespace MongoDBControll.lib
                 ts.Milliseconds);
             Console.WriteLine("[INFO]->RunTime " + elapsedTime);
             */
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Ui());
 #if DEBUG
-            Console.WriteLine("Press enter to close...");
-            Console.ReadLine();
+            //Console.WriteLine("Press enter to close...");
+            //Console.ReadLine();
 #endif
 
 

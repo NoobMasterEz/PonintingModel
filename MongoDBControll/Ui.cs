@@ -27,7 +27,8 @@ namespace MongoDBControll.lib
         }
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-
+            Application.Exit();
+            GC.Collect();
         }
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)
         {

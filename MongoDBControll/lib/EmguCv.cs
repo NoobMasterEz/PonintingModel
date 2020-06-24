@@ -83,8 +83,7 @@ namespace MongoDBControll.lib
 
         }
 
-
-
+        
 
         /// <summary>
         /// 
@@ -93,7 +92,7 @@ namespace MongoDBControll.lib
         /// <param name="max">maximum value to use with the THRESH_BINARY and THRESH_BINARY_INV thresholding types.</param>
         /// <param name="nametype">See in auto comple</param>
         /// <returns></returns>
-        public Image<Emgu.CV.Structure.Gray, byte> Thresholding(int min,int max, ThresholdType nametype)
+        private Image<Emgu.CV.Structure.Gray, byte> Thresholding(int min,int max, ThresholdType nametype)
         {
             
             this.thresholdimage = this.gray.CopyBlank(); //coppy gray to result thresholding
@@ -101,7 +100,6 @@ namespace MongoDBControll.lib
             CvInvoke.Threshold(gray, this.thresholdimage, min, max, nametype);
             return this.thresholdimage;
         }
-
 
         public Tuple<Image<Bgr,byte>,int> SegmentionWatershed(int threshmin)
         {
@@ -139,10 +137,16 @@ namespace MongoDBControll.lib
             //Mat hierarchy = new Mat() ;
             CvInvoke.FindContours(dist_8u, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
             Console.WriteLine(contours.Size);
+            MethodTranfrom u=new MethodTranfrom();
             for (int i = 0; i < contours.Size; i++)
                 {
-                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
-                 this.newimage.Draw(r,new Bgr(Color.Red));
+                Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
+                if((r.Width>3 && r.Height>3) && (r.Width < 50 && r.Height < 50))
+                {
+                    this.newimage.Draw(r, new Bgr(Color.Red));
+                    CvInvoke.Circle(this.newimage, u.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
+                }
+                    
              
                }
             //ImageViewer.Show(this.newimage);

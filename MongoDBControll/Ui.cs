@@ -23,7 +23,7 @@ namespace MongoDBControll.lib
         public Ui()
         {
             InitializeComponent();
-            this.objemgucv = new EmguCv();
+            
         }
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -35,10 +35,11 @@ namespace MongoDBControll.lib
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
                 dlg.Title = "Open Image";
-                dlg.Filter = "jpg files (*.jpg)|*.jpg";
+                dlg.Filter = "jpg files (*.fits)|*.fits";
 
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
+                    this.objemgucv = new EmguCv(dlg.FileName);
                     this.iplImage = CvInvoke.Imread(dlg.FileName).ToImage<Bgr, Byte>();
                     imageBox1.Image = this.iplImage;
                     // Create a new Bitmap object from the picture file on disk,
@@ -71,8 +72,8 @@ namespace MongoDBControll.lib
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.objemgucv.CreateImag(this.iplImage);
-            Tuple<Image<Bgr, byte>, int> result = this.objemgucv.SegmentionWatershed(7);
+           
+            Tuple<Image<Bgr, byte>, int> result = this.objemgucv.SegmentionWatershed(7,true);
             imageBox2.Image = result.Item1;
             label1.Text = Convert.ToString(result.Item2);
             GC.Collect();

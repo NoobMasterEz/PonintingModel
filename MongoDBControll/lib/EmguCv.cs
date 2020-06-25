@@ -16,34 +16,50 @@ using System.Drawing.Imaging;
 
 namespace MongoDBControll.lib
 {
-    class EmguCv
+    class EmguCv : MethodTranfrom
     {
         //private Mat imagemat;
-        private Image<Bgr, byte> newimage;
-        private Image<Emgu.CV.Structure.Gray, byte> gray;
+        private Matrix<int> raw8bit;
+        private MethodStaticFomula fomula;
+        private Image<Bgr, byte> jpg;
+        private Image<Bgr, byte> raw;
+        private Image<Emgu.CV.Structure.Gray, byte> grayjpg;
+        private Image<Emgu.CV.Structure.Gray, byte> grayraw;
         private Image<Emgu.CV.Structure.Gray, byte> thresholdimage;
         
-        public EmguCv()
+        public EmguCv(string file): base(FitsFile.GenerateImage( file))
         {
-
+      
+    
+           this.fomula = new MethodStaticFomula(); 
+           this.raw8bit = base.Convert1628(); // Create Raw
+           this.jpg = Genarate2Jpg(base.GetRaw()); // Create JPGE
+           this.raw= this.raw8bit.Mat.ToImage<Bgr, byte>();
+            
         }
 
         
-        public Matrix<int> Convert1628(Matrix<ushort> imageinput)
-        {
-            Matrix<int> result = new Matrix<int>(imageinput.Rows, imageinput.Cols);
-            for(int i =0; i < imageinput.Cols;i++)
-            {
-                for(int j =0; j < imageinput.Rows;j++)
-                {
-                    result.Data[i,j]=(int) imageinput.Data[i, j] / 255;
-                }
-            }
-            
-            return result;
+        
+
+        private Image<Bgr, byte> Genarate2Jpg(Matrix<ushort> image)
+        {   /*
+             * Createed by pee chaimg
+             */
+            ushort LowerValue, UpperValue;
+            double LowerPercen, UpperPercen;
+
+            FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
+            FitsFile.GetUpperAndLowerShortBit(image,
+                                              out LowerValue,
+                                              out UpperValue,
+                                              LowerPercen,
+                                              UpperPercen);
+            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
+            //Mat imgJPG = CvInvoke.Imread(namefile);
+            Image<Bgr, byte> imagemat = imgJPG.Mat.ToImage<Bgr, byte>();
+            return imagemat;
+
         }
-
-
 
         /// <summary>
         ///  this fuction build 2 value 
@@ -51,39 +67,21 @@ namespace MongoDBControll.lib
         ///  - gray 
         /// </summary>
         /// <param name="namefile">location file </param>
-        public void CreateImag(Image<Bgr, byte> file)
+        private void CreateImag()
         {
-            if (file is null)
-            {
-                throw new ArgumentNullException(nameof(file));
-            }
-            //Matrix<ushort> image = FitsFile.GenerateImage(file);
+            
 
-            //Matrix<int> image8bit = Convert1628(image);
-            /*
-            ushort LowerValue, UpperValue;
-            double LowerPercen, UpperPercen;
-
-            FitsFile.GetStrecthProfile(out LowerPercen, out UpperPercen);
-            FitsFile.GetUpperAndLowerShortBit(image, out LowerValue, out UpperValue, LowerPercen, UpperPercen);
-            Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
-            Mat imgJPG = CvInvoke.Imread(namefile);
-            Image<Bgr, byte> imagemat = imgJPG.ToImage<Bgr, byte>();
-            Image<Bgr, byte> newlayer = image8bit.Mat.ToImage<Bgr, byte>();
-           */
-            //ImageViewer.Show(imagemat);
-            Image<Bgr, byte> newlayer = file;
-            this.newimage = newlayer;
-            //this.newimage = imagemat; // img to bgr
-            //this.gray = imagemat.ToImage<Gray, byte>(); // img to gray 
-            this.gray = newlayer.Convert<Gray, Byte>();
-
+            
+         
+            this.grayjpg = this.jpg.Convert<Gray, Byte>();
+            this.grayraw = this.raw.Convert<Gray, Byte>();
+            // Image<Bgr, byte> newlayer = image8bit.Mat.ToImage<Bgr, byte>();
 
 
 
         }
 
-        
+
 
         /// <summary>
         /// 
@@ -92,29 +90,33 @@ namespace MongoDBControll.lib
         /// <param name="max">maximum value to use with the THRESH_BINARY and THRESH_BINARY_INV thresholding types.</param>
         /// <param name="nametype">See in auto comple</param>
         /// <returns></returns>
-        private Image<Emgu.CV.Structure.Gray, byte> Thresholding(int min,int max, ThresholdType nametype)
+        private Image<Emgu.CV.Structure.Gray, byte> Thresholding(Image<Emgu.CV.Structure.Gray,byte> gray, int min,int max, ThresholdType nametype)
         {
             
-            this.thresholdimage = this.gray.CopyBlank(); //coppy gray to result thresholding
+            this.thresholdimage = gray.CopyBlank(); //coppy gray to result thresholding
             ///
             CvInvoke.Threshold(gray, this.thresholdimage, min, max, nametype);
             return this.thresholdimage;
         }
 
-        public Tuple<Image<Bgr,byte>,int> SegmentionWatershed(int threshmin)
+
+        public Tuple<Image<Bgr,byte>,int> SegmentionWatershed(int threshmin,bool flat)
         {
+            CreateImag();
             //Mat3b src = imread("path_to_image");
             double[] min, max;
             Point[] pmin, pmax;
             //cvtColor(src, gray, COLOR_BGR2GRAY);
-            Image<Gray, byte> gray = this.gray;
-            Image<Gray, byte> thresh=this.gray.CopyBlank();
+            Image<Gray, byte> gray = this.grayjpg;
+            Image<Gray, byte> thresh=this.grayjpg.CopyBlank();
             Image<Gray, float> thresh2 = new Image<Gray, float>(gray.Width, gray.Height);
 
             //threshold(gray, thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
-            CvInvoke.Threshold(gray.SmoothGaussian(3), thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
+            if(flat)
+                CvInvoke.Threshold(gray.SmoothGaussian(3), thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
+            else
+                CvInvoke.Threshold(gray, thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
 
-            
             // noise removal
             Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
 
@@ -137,21 +139,21 @@ namespace MongoDBControll.lib
             //Mat hierarchy = new Mat() ;
             CvInvoke.FindContours(dist_8u, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
             Console.WriteLine(contours.Size);
-            MethodTranfrom u=new MethodTranfrom();
+            
             for (int i = 0; i < contours.Size; i++)
                 {
                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
                 if((r.Width>3 && r.Height>3) && (r.Width < 50 && r.Height < 50))
                 {
-                    this.newimage.Draw(r, new Bgr(Color.Red));
-                    CvInvoke.Circle(this.newimage, u.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
+                    this.jpg.Draw(r, new Bgr(Color.Red));
+                    CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
                 }
                     
              
                }
-            //ImageViewer.Show(this.newimage);
+            ImageViewer.Show(this.jpg);
 
-            return Tuple.Create(this.newimage, contours.Size);       
+            return Tuple.Create(this.jpg, contours.Size);       
                 
          }
 
@@ -182,14 +184,14 @@ namespace MongoDBControll.lib
                                                      minRadius,
                                                      maxRadius);
             Console.WriteLine(circles.Count());
-            /*
+            
             foreach (CircleF circle in circles)
             {
-                this.newimage.Draw(circle, new Bgr(Color.Red), 2);
+                this.jpg.Draw(circle, new Bgr(Color.Red), 2);
             }
-            */
+            
             //ImageViewer.Show(this.newimage);
-            return newimage;
+            return this.jpg;
         }
       
         public void Show(Image<Gray, float> image)

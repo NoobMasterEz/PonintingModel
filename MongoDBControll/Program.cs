@@ -31,8 +31,10 @@ namespace MongoDBControll.lib
             //Console.WriteLine(result.ToList().Count());
 
             //Image processing 
+            
+            EmguCv test1 = new EmguCv(Fits);
+            test1.SegmentionWatershed(7, true);
             /*
-            EmguCv test1 = new EmguCv();
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             test1.CreateImag(Fits);
@@ -48,9 +50,9 @@ namespace MongoDBControll.lib
                 ts.Milliseconds);
             Console.WriteLine("[INFO]->RunTime " + elapsedTime);
             */
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Ui());
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new Ui());
 #if DEBUG
             //Console.WriteLine("Press enter to close...");
             //Console.ReadLine();

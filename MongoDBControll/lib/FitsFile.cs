@@ -51,6 +51,7 @@ namespace MongoDBControll.lib
 
             return result;
         }
+
         public static void GetUpperAndLower8Bit(Matrix<Byte> CVMat, out Byte LowerValue, out Byte UpperValue, Double LowerPercen, Double UpperPercen)
         {
             int DataLength = CVMat.Rows * CVMat.Cols;

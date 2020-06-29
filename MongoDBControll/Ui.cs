@@ -73,11 +73,11 @@ namespace MongoDBControll.lib
         private void button1_Click(object sender, EventArgs e)
         {
            
-            Tuple<Image<Bgr, byte>, int> result = this.objemgucv.SegmentionWatershed(7,true);
+            Tuple<Image<Bgr, byte>, int> result = this.objemgucv.SegmentionWatershed(7,true,"RAW");
             imageBox2.Image = result.Item1;
-            label1.Text = Convert.ToString(result.Item2);
+          
+  label1.Text = Convert.ToString(result.Item2);
             GC.Collect();
-
         }
 
         private void groupBox3_Enter(object sender, EventArgs e)
@@ -86,6 +86,11 @@ namespace MongoDBControll.lib
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
 
         }

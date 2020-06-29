@@ -31,9 +31,9 @@ namespace MongoDBControll.lib
             //Console.WriteLine(result.ToList().Count());
 
             //Image processing 
-            
-            EmguCv test1 = new EmguCv(Fits);
-            test1.SegmentionWatershed(7, true);
+            EmguCv test=new EmguCv(Fits);
+            test.SegmentionWatershed(7, false,"JPG");
+            test.SegmentionWatershedRAW(7, false, "RAW");
             /*
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();

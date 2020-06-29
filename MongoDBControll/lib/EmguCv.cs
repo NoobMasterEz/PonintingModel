@@ -26,20 +26,22 @@ namespace MongoDBControll.lib
         private Image<Emgu.CV.Structure.Gray, byte> grayjpg;
         private Image<Emgu.CV.Structure.Gray, byte> grayraw;
         private Image<Emgu.CV.Structure.Gray, byte> thresholdimage;
-        
+        private Image<Gray, byte> gray;
+        private Image<Gray, byte> thresh;
+
         public EmguCv(string file): base(FitsFile.GenerateImage( file))
         {
-      
-    
-           this.fomula = new MethodStaticFomula(); 
-           this.raw8bit = base.Convert1628(); // Create Raw
-           this.jpg = Genarate2Jpg(base.GetRaw()); // Create JPGE
-           this.raw= this.raw8bit.Mat.ToImage<Bgr, byte>();
-            
+
+
+            this.fomula = new MethodStaticFomula();
+            this.raw8bit = base.Convert1628(); // Create Raw
+            this.jpg = Genarate2Jpg(base.GetRaw()); // Create JPGE
+            this.raw = this.raw8bit.Mat.ToImage<Bgr, byte>();
+
         }
 
-        
-        
+
+
 
         private Image<Bgr, byte> Genarate2Jpg(Matrix<ushort> image)
         {   /*
@@ -69,14 +71,9 @@ namespace MongoDBControll.lib
         /// <param name="namefile">location file </param>
         private void CreateImag()
         {
-            
 
-            
-         
             this.grayjpg = this.jpg.Convert<Gray, Byte>();
             this.grayraw = this.raw.Convert<Gray, Byte>();
-            // Image<Bgr, byte> newlayer = image8bit.Mat.ToImage<Bgr, byte>();
-
 
 
         }
@@ -100,15 +97,33 @@ namespace MongoDBControll.lib
         }
 
 
-        public Tuple<Image<Bgr,byte>,int> SegmentionWatershed(int threshmin,bool flat)
+        public Tuple<Image<Bgr,byte>,int> SegmentionWatershed(int threshmin,bool flat,string check)
         {
             CreateImag();
             //Mat3b src = imread("path_to_image");
             double[] min, max;
             Point[] pmin, pmax;
+            
+
+            if (check.Equals("JPG"))
+            {
+                this.gray = this.grayjpg;
+                this.thresh = this.grayjpg.CopyBlank();
+            }
+            else if(check.Equals("RAW"))
+            {
+                this.gray = this.grayraw;
+                this.thresh = this.grayraw.CopyBlank();
+            }
+            else
+            {
+                Tuple.Create(this.jpg, 0);
+
+            }
+              
             //cvtColor(src, gray, COLOR_BGR2GRAY);
-            Image<Gray, byte> gray = this.grayjpg;
-            Image<Gray, byte> thresh=this.grayjpg.CopyBlank();
+
+
             Image<Gray, float> thresh2 = new Image<Gray, float>(gray.Width, gray.Height);
 
             //threshold(gray, thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
@@ -116,14 +131,14 @@ namespace MongoDBControll.lib
                 CvInvoke.Threshold(gray.SmoothGaussian(3), thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
             else
                 CvInvoke.Threshold(gray, thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
-
+            
             // noise removal
-            Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(3, 3), new Point(1, 1));
+            Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Ellipse ,new Size(3, 3), new Point(1, 1));
 
             //Mat1b opening;
             //morphologyEx(thresh, opening, MORPH_OPEN, kernel, Point(-1, -1), 2);
-            Image<Gray, byte> opening = thresh.MorphologyEx(MorphOp.Open, kernel, new Point(1, 1), 2, BorderType.Default, new MCvScalar(255));
-            
+            Image<Gray, byte> opening = thresh.MorphologyEx(MorphOp.Open, kernel, new Point(1, 1), 1, BorderType.Default, new MCvScalar(255));
+            //ImageViewer.Show(opening);
             Image<Gray, byte> sure_bg = opening.Dilate(3);
             Image<Gray, float> dist_transform = new Image<Gray, float>(opening.Width, opening.Height);
             CvInvoke.DistanceTransform(opening, dist_transform, null, DistType.L2 , 5);
@@ -132,21 +147,21 @@ namespace MongoDBControll.lib
 
             dist_transform.MinMax(out min, out max, out pmin, out pmax);
             //Console.WriteLine(max[0]);
-            CvInvoke.Threshold(dist_transform,thresh2, max[0]*0.1, 255,0);
+            CvInvoke.Threshold(dist_transform,thresh2, max[0]*0.2, 255,0);
             Image<Gray, Byte> dist_8u = thresh2.Convert<Gray, Byte>();
             //ImageViewer.Show(dist_8u);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             //Mat hierarchy = new Mat() ;
             CvInvoke.FindContours(dist_8u, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
-            Console.WriteLine(contours.Size);
+            Console.WriteLine("[INFO](JPG)->{0}",contours.Size);
             
             for (int i = 0; i < contours.Size; i++)
                 {
                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
                 if((r.Width>3 && r.Height>3) && (r.Width < 50 && r.Height < 50))
                 {
-                    this.jpg.Draw(r, new Bgr(Color.Red));
-                    CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
+                    this.jpg.Draw(r, new Bgr(Color.Green));
+                    //CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
                 }
                     
              
@@ -157,7 +172,80 @@ namespace MongoDBControll.lib
                 
          }
 
+        public Tuple<Image<Bgr, byte>, int> SegmentionWatershedRAW(int threshmin, bool flat, string check)
+        {
+            CreateImag();
+            //Mat3b src = imread("path_to_image");
+            double[] min, max;
+            Point[] pmin, pmax;
 
+
+            if (check.Equals("JPG"))
+            {
+                this.gray = this.grayjpg;
+                this.thresh = this.grayjpg.CopyBlank();
+            }
+            else if (check.Equals("RAW"))
+            {
+                this.gray = this.grayraw;
+                this.thresh = this.grayraw.CopyBlank();
+            }
+            else
+            {
+                Tuple.Create(this.jpg, 0);
+
+            }
+
+            //cvtColor(src, gray, COLOR_BGR2GRAY);
+
+
+            Image<Gray, float> thresh2 = new Image<Gray, float>(gray.Width, gray.Height);
+
+            //threshold(gray, thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
+            if (flat)
+                CvInvoke.Threshold(gray.SmoothGaussian(3), thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
+            else
+                CvInvoke.Threshold(gray, thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
+
+            // noise removal
+            Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(3, 3), new Point(1, 1));
+
+            //Mat1b opening;
+            //morphologyEx(thresh, opening, MORPH_OPEN, kernel, Point(-1, -1), 2);
+            Image<Gray, byte> opening = thresh.MorphologyEx(MorphOp.Open, kernel, new Point(1, 1), 1, BorderType.Default, new MCvScalar(255));
+            //ImageViewer.Show(opening);
+            Image<Gray, byte> sure_bg = opening.Dilate(3);
+            Image<Gray, float> dist_transform = new Image<Gray, float>(opening.Width, opening.Height);
+            CvInvoke.DistanceTransform(opening, dist_transform, null, DistType.L2, 5);
+
+
+
+            dist_transform.MinMax(out min, out max, out pmin, out pmax);
+            //Console.WriteLine(max[0]);
+            CvInvoke.Threshold(dist_transform, thresh2, max[0] * 0.2, 255, 0);
+            Image<Gray, Byte> dist_8u = thresh2.Convert<Gray, Byte>();
+            //ImageViewer.Show(dist_8u);
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            //Mat hierarchy = new Mat() ;
+            CvInvoke.FindContours(dist_8u, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
+            Console.WriteLine("[INFO](JPG)->{0}", contours.Size);
+
+            for (int i = 0; i < contours.Size; i++)
+            {
+                Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
+                if ((r.Width > 3 && r.Height > 3) && (r.Width < 50 && r.Height < 50))
+                {
+                    ///this.jpg.Draw(r, new Bgr(Color.Red));
+                    CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2, new MCvScalar(0, 0, 255));
+                }
+
+
+            }
+            ImageViewer.Show(this.jpg);
+
+            return Tuple.Create(this.jpg, contours.Size);
+
+        }
 
 
         /// <summary>
@@ -190,7 +278,6 @@ namespace MongoDBControll.lib
                 this.jpg.Draw(circle, new Bgr(Color.Red), 2);
             }
             
-            //ImageViewer.Show(this.newimage);
             return this.jpg;
         }
       

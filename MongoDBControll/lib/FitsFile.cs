@@ -16,30 +16,30 @@ namespace MongoDBControll.lib
         }
         public static Matrix<ushort> GenerateImage(string pathfitsfile)
         {
-           
+
             Fits fits = new Fits(pathfitsfile);
-            
+
             ImageHDU basichdu = (ImageHDU)fits.ReadHDU();
             Array[] img = (Array[])basichdu.Kernel;
-            
+
             int row = basichdu.Header.GetIntValue("NAXIS1");
             int colum = basichdu.Header.GetIntValue("NAXIS2");
             Matrix<ushort> result = new Matrix<ushort>(row, colum);
             ushort[][] newimage = new ushort[row][];
-            
+
             for (int i = 0; i < colum; i++)
             {
                 newimage[i] = new ushort[colum];
 
                 short[] value = (short[])img[i];
-                for(int j=0; j < row; j++)
+                for (int j = 0; j < row; j++)
                 {
                     newimage[i][j] = (ushort)(value[j] + 32767);
                 }
 
             }
 
-            
+
             for (int i = 0; i < colum; i++)
             {
                 for (int j = 0; j < row; j++)
@@ -93,7 +93,7 @@ namespace MongoDBControll.lib
             UpperValue = DataList[UpperPosition == DataLength ? UpperPosition - 1 : UpperPosition];
         }
 
-        
+
         public static Matrix<UInt16> StretchImageU16Bit(Matrix<UInt16> UInt16Image, UInt16 MinVal, UInt16 MaxVal)
         {
             UInt16 Devider = Convert.ToUInt16(Math.Abs((UInt16)MaxVal - (UInt16)MinVal));
@@ -102,7 +102,7 @@ namespace MongoDBControll.lib
             Matrix<UInt16> NewImg = (((UInt16Image - (UInt16)MinVal) / Devider * (UInt16)65535));
             return NewImg;
         }
-        
+
 
         public static void GetUpperAndLower32Bit(Matrix<int> CVMat, out int LowerValue, out int UpperValue, Double LowerPercen, Double UpperPercen)
         {
@@ -133,7 +133,6 @@ namespace MongoDBControll.lib
         public static void GetStrecthProfile(out Double LowerPercen, out Double UpperPercen)
         {
             String StretchProfile = Properties.Settings.Default.ImagingScreenStretchProfile;
-
             if (StretchProfile == "low")
             {
                 UpperPercen = 99.71;
@@ -236,12 +235,9 @@ namespace MongoDBControll.lib
             Double B = (Double)ushort.MaxValue;
             Double C = (Double)MinVal;
             Double D = (Double)MaxVal;
-
             Matrix<UInt16> NewImg = (UInt16Image - C) * ((B - A) / (D - C)) + A;
-
             //Double Devider = Math.Abs((UInt16)MaxVal - (UInt16)MinVal);
             //Devider = Devider <= 0 ? (UInt16)1 : Devider;
-
             //Matrix<Double> UInt16ImageD = UInt16Image.Convert<Double>();
             ////Matrix<UInt16> NewImg = (((UInt16ImageD - (Double)MinVal) / (Double)Devider) * (Double)ushort.MaxValue).Convert<UInt16>();
             //Matrix<UInt16> NewImg = (((UInt16Image - (Double)MinVal) / Devider) * (Double)ushort.MaxValue);
@@ -249,5 +245,5 @@ namespace MongoDBControll.lib
         }
         */
     }
-    
+
 }

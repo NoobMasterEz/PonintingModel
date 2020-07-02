@@ -1,4 +1,6 @@
 ﻿using Emgu.CV;
+using Emgu.CV.Structure;
+using nom.tam.fits;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -73,7 +73,7 @@ namespace MongoDBControll.lib
         private void button1_Click(object sender, EventArgs e)
         {
            
-            Tuple<Image<Bgr, byte>, int> result = this.objemgucv.SegmentionWatershed(7,true,"RAW");
+            Tuple<Image<Bgr, byte>, int> result = this.objemgucv.SegmentionWatershed(7,true,TypeImage.RAW);
             imageBox2.Image = result.Item1;
           
   label1.Text = Convert.ToString(result.Item2);

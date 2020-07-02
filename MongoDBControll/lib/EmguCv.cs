@@ -29,10 +29,11 @@ namespace MongoDBControll.lib
         private Image<Gray, byte> gray;
         private Image<Gray, byte> thresh;
 
-        public EmguCv(string file): base(FitsFile.GenerateImage( file))
+        public EmguCv(string file) : base(new FitsFile(file).GenerateImage())
         {
-
-
+            FitsFile test = new FitsFile(file);
+            test.GenerateImage();
+            test.ShowInfo();
             this.fomula = new MethodStaticFomula();
             this.raw8bit = base.Convert1628(); // Create Raw
             this.jpg = Genarate2Jpg(base.GetRaw()); // Create JPGE
@@ -87,9 +88,9 @@ namespace MongoDBControll.lib
         /// <param name="max">maximum value to use with the THRESH_BINARY and THRESH_BINARY_INV thresholding types.</param>
         /// <param name="nametype">See in auto comple</param>
         /// <returns></returns>
-        private Image<Emgu.CV.Structure.Gray, byte> Thresholding(Image<Emgu.CV.Structure.Gray,byte> gray, int min,int max, ThresholdType nametype)
+        private Image<Emgu.CV.Structure.Gray, byte> Thresholding(Image<Emgu.CV.Structure.Gray, byte> gray, int min, int max, ThresholdType nametype)
         {
-            
+
             this.thresholdimage = gray.CopyBlank(); //coppy gray to result thresholding
             ///
             CvInvoke.Threshold(gray, this.thresholdimage, min, max, nametype);
@@ -97,20 +98,20 @@ namespace MongoDBControll.lib
         }
 
 
-        public Tuple<Image<Bgr,byte>,int> SegmentionWatershed(int threshmin,bool flat,string check)
+        public Tuple<Image<Bgr, byte>, int> SegmentionWatershed(int threshmin, bool flat, TypeImage check)
         {
             CreateImag();
             //Mat3b src = imread("path_to_image");
             double[] min, max;
             Point[] pmin, pmax;
-            
 
-            if (check.Equals("JPG"))
+
+            if (check.Equals(TypeImage.JPG))
             {
                 this.gray = this.grayjpg;
                 this.thresh = this.grayjpg.CopyBlank();
             }
-            else if(check.Equals("RAW"))
+            else if (check.Equals(TypeImage.RAW))
             {
                 this.gray = this.grayraw;
                 this.thresh = this.grayraw.CopyBlank();
@@ -120,20 +121,20 @@ namespace MongoDBControll.lib
                 Tuple.Create(this.jpg, 0);
 
             }
-              
+
             //cvtColor(src, gray, COLOR_BGR2GRAY);
 
 
             Image<Gray, float> thresh2 = new Image<Gray, float>(gray.Width, gray.Height);
 
             //threshold(gray, thresh, 0, 255, THRESH_BINARY | THRESH_OTSU);
-            if(flat)
+            if (flat)
                 CvInvoke.Threshold(gray.SmoothGaussian(3), thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
             else
                 CvInvoke.Threshold(gray, thresh, threshmin, 255, ThresholdType.Binary | ThresholdType.Otsu);
-            
+
             // noise removal
-            Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Ellipse ,new Size(3, 3), new Point(1, 1));
+            Mat kernel = CvInvoke.GetStructuringElement(ElementShape.Ellipse, new Size(3, 3), new Point(1, 1));
 
             //Mat1b opening;
             //morphologyEx(thresh, opening, MORPH_OPEN, kernel, Point(-1, -1), 2);
@@ -141,38 +142,38 @@ namespace MongoDBControll.lib
             //ImageViewer.Show(opening);
             Image<Gray, byte> sure_bg = opening.Dilate(3);
             Image<Gray, float> dist_transform = new Image<Gray, float>(opening.Width, opening.Height);
-            CvInvoke.DistanceTransform(opening, dist_transform, null, DistType.L2 , 5);
+            CvInvoke.DistanceTransform(opening, dist_transform, null, DistType.L2, 5);
 
-            
+
 
             dist_transform.MinMax(out min, out max, out pmin, out pmax);
             //Console.WriteLine(max[0]);
-            CvInvoke.Threshold(dist_transform,thresh2, max[0]*0.2, 255,0);
+            CvInvoke.Threshold(dist_transform, thresh2, max[0] * 0.2, 255, 0);
             Image<Gray, Byte> dist_8u = thresh2.Convert<Gray, Byte>();
             //ImageViewer.Show(dist_8u);
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             //Mat hierarchy = new Mat() ;
             CvInvoke.FindContours(dist_8u, contours, null, RetrType.External, ChainApproxMethod.ChainApproxSimple);
-            Console.WriteLine("[INFO](JPG)->{0}",contours.Size);
-            
+            Console.WriteLine("[INFO](JPG)->{0}", contours.Size);
+
             for (int i = 0; i < contours.Size; i++)
-                {
+            {
                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
-                if((r.Width>3 && r.Height>3) && (r.Width < 50 && r.Height < 50))
+                if ((r.Width > 3 && r.Height > 3) && (r.Width < 50 && r.Height < 50))
                 {
                     this.jpg.Draw(r, new Bgr(Color.Green));
                     //CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
                 }
-                    
-             
-               }
+
+
+            }
             ImageViewer.Show(this.jpg);
 
-            return Tuple.Create(this.jpg, contours.Size);       
-                
-         }
+            return Tuple.Create(this.jpg, contours.Size);
 
-        public Tuple<Image<Bgr, byte>, int> SegmentionWatershedRAW(int threshmin, bool flat, string check)
+        }
+
+        public Tuple<Image<Bgr, byte>, int> SegmentionWatershedRAW(int threshmin, bool flat, TypeImage check)
         {
             CreateImag();
             //Mat3b src = imread("path_to_image");
@@ -180,12 +181,12 @@ namespace MongoDBControll.lib
             Point[] pmin, pmax;
 
 
-            if (check.Equals("JPG"))
+            if (check.Equals(TypeImage.JPG))
             {
                 this.gray = this.grayjpg;
                 this.thresh = this.grayjpg.CopyBlank();
             }
-            else if (check.Equals("RAW"))
+            else if (check.Equals(TypeImage.RAW))
             {
                 this.gray = this.grayraw;
                 this.thresh = this.grayraw.CopyBlank();
@@ -259,7 +260,7 @@ namespace MongoDBControll.lib
         /// <param name="minRadius">Minimum circle radius.</param>
         /// <param name="maxRadius">Maximum circle radius.</param>
         /// <returns>Image<Emgu.CV.Structure.Bgr, byte></returns>
-        public Image<Emgu.CV.Structure.Bgr, byte> HouCircles(HoughType method,double dp,double minDist,double param1 = 100,double param2 = 100,int minRadius = 0,int maxRadius = 0)
+        public Image<Emgu.CV.Structure.Bgr, byte> HouCircles(HoughType method, double dp, double minDist, double param1 = 100, double param2 = 100, int minRadius = 0, int maxRadius = 0)
         {
 
             CircleF[] circles;
@@ -272,15 +273,15 @@ namespace MongoDBControll.lib
                                                      minRadius,
                                                      maxRadius);
             Console.WriteLine(circles.Count());
-            
+
             foreach (CircleF circle in circles)
             {
                 this.jpg.Draw(circle, new Bgr(Color.Red), 2);
             }
-            
+
             return this.jpg;
         }
-      
+
         public void Show(Image<Gray, float> image)
         {
             if (image is null)
@@ -290,7 +291,7 @@ namespace MongoDBControll.lib
 
             ImageViewer.Show(image);
         }
-        
+
     }
 
 }

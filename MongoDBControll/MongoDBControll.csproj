@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="lib\Accord.cs" />
+    <Compile Include="lib\TypeImage.cs" />
     <Compile Include="lib\MethodTranfrom.cs" />
     <Compile Include="lib\FitsFile.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

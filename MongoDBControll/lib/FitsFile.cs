@@ -1,30 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Emgu.CV;
 // libfits
 using nom.tam.fits;
+using nom.tam.image;
+
 namespace MongoDBControll.lib
 {
     class FitsFile
     {
-        FitsFile()
+        private string path;
+        private Matrix<ushort> result;
+        private Fits fits;
+        public ImageHDU basichdu = null;
+        public FitsFile(string pathfitsfile)
         {
-
+            this.path = pathfitsfile;
         }
-        public static Matrix<ushort> GenerateImage(string pathfitsfile)
+        public Matrix<ushort> GenerateImage()
         {
 
-            Fits fits = new Fits(pathfitsfile);
 
-            ImageHDU basichdu = (ImageHDU)fits.ReadHDU();
+            this.fits = new Fits(this.path);
+
+            this.basichdu = (ImageHDU)fits.ReadHDU();
+
             Array[] img = (Array[])basichdu.Kernel;
 
             int row = basichdu.Header.GetIntValue("NAXIS1");
             int colum = basichdu.Header.GetIntValue("NAXIS2");
-            Matrix<ushort> result = new Matrix<ushort>(row, colum);
+            this.result = new Matrix<ushort>(row, colum);
             ushort[][] newimage = new ushort[row][];
 
             for (int i = 0; i < colum; i++)
@@ -44,13 +53,32 @@ namespace MongoDBControll.lib
             {
                 for (int j = 0; j < row; j++)
                 {
-                    result.Data[i, j] = newimage[i][j];
+                    this.result.Data[i, j] = newimage[i][j];
 
                 }
             }
 
-            return result;
+            return this.result;
+
         }
+
+
+        public void ShowInfo()
+        {
+            BasicHDU h = this.fits.GetHDU(0);
+            BasicHDU[] hdus = this.fits.Read();
+
+            for (int i = 0; i < hdus.Length; i += 1)
+            {
+                hdus[i].Info();
+               
+            }
+            Header hdr = h.Header;
+            Console.WriteLine(hdr.GetIntValue("NAXIS1"));
+
+
+        }
+
 
         public static void GetUpperAndLower8Bit(Matrix<Byte> CVMat, out Byte LowerValue, out Byte UpperValue, Double LowerPercen, Double UpperPercen)
         {

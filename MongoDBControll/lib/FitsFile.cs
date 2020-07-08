@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,11 @@ using Emgu.CV;
 // libfits
 using nom.tam.fits;
 using nom.tam.image;
+using nom.tam.util;
+
+//re
+using System.Text.RegularExpressions;
+
 
 namespace MongoDBControll.lib
 {
@@ -16,21 +22,26 @@ namespace MongoDBControll.lib
         private string path;
         private Matrix<ushort> result;
         private Fits fits;
-        public ImageHDU basichdu = null;
+        public ImageHDU basichdu;
+        private double _objra { get; set; }
+        private double _objdec { get; set; }
+
         public FitsFile(string pathfitsfile)
         {
             this.path = pathfitsfile;
+            
         }
+
+        
         public Matrix<ushort> GenerateImage()
         {
 
 
             this.fits = new Fits(this.path);
-
+          
             this.basichdu = (ImageHDU)fits.ReadHDU();
-
             Array[] img = (Array[])basichdu.Kernel;
-
+            
             int row = basichdu.Header.GetIntValue("NAXIS1");
             int colum = basichdu.Header.GetIntValue("NAXIS2");
             this.result = new Matrix<ushort>(row, colum);
@@ -57,28 +68,60 @@ namespace MongoDBControll.lib
 
                 }
             }
-
+            CalculatRADEC();
+            this.fits.Close();
             return this.result;
 
         }
-
-
-        public void ShowInfo()
+        private void CalculatRADEC()
         {
-            BasicHDU h = this.fits.GetHDU(0);
-            BasicHDU[] hdus = this.fits.Read();
-
-            for (int i = 0; i < hdus.Length; i += 1)
+            Header hdr =this.basichdu.Header;
+            Cursor iter = hdr.GetCursor();
+            Console.WriteLine("HEADER \n ");
+            while (iter.MoveNext())
             {
-                hdus[i].Info();
-               
+                try
+                {
+                    object dict = iter.Current;
+                    DictionaryEntry entry = (DictionaryEntry)dict;
+                    HeaderCard headcard = (HeaderCard)entry.Value;
+                    String key = headcard.Key;
+                    Match m = Regex.Match(headcard.Comment, @"\d+(?:\.\d+)?");
+                    if (key.Equals("OBJCTRA"))
+                    {
+                        this._objra = Convert.ToDouble(m.Value);
+                        Console.WriteLine("[INFO]" + key + "=" + headcard.Value + headcard.Comment);
+                        Console.WriteLine("[INFO][FROMCOMMENT]" + Convert.ToDouble(m.Value));
+                    }
+                    else if (key.Equals("OBJCTDEC"))
+                    {
+                        this._objdec = Convert.ToDouble(m.Value);
+                        Console.WriteLine("[INFO]" + key + "=" + headcard.Value + headcard.Comment);
+                        Console.WriteLine("[INFO][FROMCOMMENT]" + Convert.ToDouble(m.Value));
+                    }
+
+                    
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR KEY:"+ex.Message);
+                }
             }
-            Header hdr = h.Header;
-            Console.WriteLine(hdr.GetIntValue("NAXIS1"));
+            
+            
 
 
         }
+        public double GetRA 
+        {
+            get { return this._objra; }
 
+        }
+        public double GetDEC
+        {
+            get { return this._objdec; }
+
+        }
 
         public static void GetUpperAndLower8Bit(Matrix<Byte> CVMat, out Byte LowerValue, out Byte UpperValue, Double LowerPercen, Double UpperPercen)
         {

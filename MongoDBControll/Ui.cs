@@ -12,7 +12,7 @@ using Emgu.CV;
 using Emgu.CV.UI;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-
+using Emgu.CV.Util;
 
 namespace MongoDBControll.lib
 {
@@ -73,10 +73,10 @@ namespace MongoDBControll.lib
         private void button1_Click(object sender, EventArgs e)
         {
            
-            Tuple<Image<Bgr, byte>, int> result = this.objemgucv.SegmentionWatershed(7,true,TypeImage.RAW);
+            Tuple<Image<Bgr, byte>, VectorOfVectorOfPoint> result = this.objemgucv.SegmentionWatershed(7,true,TypeImage.RAW);
             imageBox2.Image = result.Item1;
           
-  label1.Text = Convert.ToString(result.Item2);
+            label1.Text = Convert.ToString(result.Item2);
             GC.Collect();
         }
 

@@ -44,6 +44,18 @@ namespace MongoDBControll.lib
     {
         public Point CenterOfCircle(Rectangle rect) => new Point(rect.Left + rect.Width / 2,
                              rect.Top + rect.Height / 2);
+
+        public static double[] StandardCoordi(double ra, double dec, double objra, double objdec)
+        {
+            /* α, right ascension
+             * δ, declination
+             */
+            double btm = (Math.Sin(objdec) * Math.Sin(dec) + (Math.Cos(dec - objdec)));
+            double x = (Math.Cos(dec) * Math.Sin(ra - objra))/btm;
+            double y = ((Math.Cos(objdec) * Math.Sin(dec)) - (Math.Sin(objdec) * Math.Cos(dec) * Math.Cos(objdec - dec))) / btm;
+            
+            return new double[] { x, y };  
+        }
     }
 
 

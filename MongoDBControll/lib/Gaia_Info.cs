@@ -111,4 +111,18 @@ namespace MongoDBControll.lib
             public GeoJsonPoint<GeoJson2DGeographicCoordinates> location;
           
     }
+    public class GaiaInfo11
+    {
+        public Object _id;
+        public long ID;
+        public double RA;
+        public double RA_Error;
+        public double Dec;
+        public double Dec_Error;
+        public double Parallax;
+        public double PM_RA;
+        public double PM_Dec;
+        public double Mag;
+        public GeoJsonPoint<GeoJson2DGeographicCoordinates> Location;
+    }
 }

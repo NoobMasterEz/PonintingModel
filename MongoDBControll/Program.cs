@@ -25,15 +25,30 @@ namespace MongoDBControll.lib
         static void Main(string[] args)
         {
             //Data Base 
-            //Mongolib mongoLib = new Mongolib("mongodb://192.168.200.126:27017","GaiaData");
+            Mongolib mongoLib = new Mongolib("mongodb://127.0.0.1:27017","GaiaData");
+            mongoLib.NAMECOLLECTION = "GDR2Mag11";
             //double[,] polygon = new double[,] { { -1.97, 1.77 }, { -1.9928, 1.7193 }, { -1.9375, 1.8303 }, { -1.97, 1.77 } };
-            //IFindFluent<GaiaInfo, GaiaInfo> result = mongoLib.GeocenterSpherestring(1, 1, 0.01);
-            //Console.WriteLine(result.ToList().Count());
+            IFindFluent<GaiaInfo11, GaiaInfo11> result = (IFindFluent<GaiaInfo11, GaiaInfo11>)mongoLib.GeocenterSpherestring(0, 0, 0.01);
+            
+   
 
             //Image processing 
             EmguCv test=new EmguCv(Fits);
             test.SegmentionWatershed(7, false,TypeImage.JPG);
             test.SegmentionWatershedRAW(7, false, TypeImage.RAW);
+            double[] resultCal;
+            foreach (var item in result.ToList())
+            {
+                resultCal=MethodStaticFomula.StandardCoordi(Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()), 4.2620940334, 0.5893976884);
+                Console.WriteLine("[INFO](Query From Database) RA={0}", Convert.ToDouble(item.RA.ToString()));
+                Console.WriteLine("[INFO](Query From Database) DEC={0}", Convert.ToDouble(item.Dec.ToString()));
+                Console.WriteLine("[INFO](Calculat)={0},{1}",resultCal[0], resultCal[0]);
+            }
+            #if DEBUG
+                        Console.WriteLine("Press enter to close...");
+                        Console.ReadLine();
+            #endif
+
             /*
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -53,10 +68,6 @@ namespace MongoDBControll.lib
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Ui());
-#if DEBUG
-            //Console.WriteLine("Press enter to close...");
-            //Console.ReadLine();
-#endif
 
 
         }

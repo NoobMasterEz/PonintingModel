@@ -16,7 +16,7 @@ using System.Drawing.Imaging;
 
 namespace MongoDBControll.lib
 {
-    class EmguCv : MethodTranfrom
+    class EmguCv 
     {
         //private Mat imagemat;
         private Matrix<int> raw8bit;
@@ -29,14 +29,14 @@ namespace MongoDBControll.lib
         private Image<Gray, byte> gray;
         private Image<Gray, byte> thresh;
 
-        public EmguCv(string file) : base(new FitsFile(file).GenerateImage())
+        public EmguCv(string file) 
         {
+            
             FitsFile test = new FitsFile(file);
-            test.GenerateImage();
-            test.ShowInfo();
+            MethodTranfrom  Method= new MethodTranfrom(test.GenerateImage());    
             this.fomula = new MethodStaticFomula();
-            this.raw8bit = base.Convert1628(); // Create Raw
-            this.jpg = Genarate2Jpg(base.GetRaw()); // Create JPGE
+            this.raw8bit = Method.Convert1628(); // Create Raw
+            this.jpg = Genarate2Jpg(Method.GetRaw()); // Create JPGE
             this.raw = this.raw8bit.Mat.ToImage<Bgr, byte>();
 
         }
@@ -59,8 +59,8 @@ namespace MongoDBControll.lib
                                               UpperPercen);
             Matrix<ushort> imgJPG = FitsFile.StretchImageU16Bit(image, LowerValue, UpperValue);
             //Mat imgJPG = CvInvoke.Imread(namefile);
-            Image<Bgr, byte> imagemat = imgJPG.Mat.ToImage<Bgr, byte>();
-            return imagemat;
+            
+            return imgJPG.Mat.ToImage<Bgr, byte>();
 
         }
 
@@ -98,7 +98,7 @@ namespace MongoDBControll.lib
         }
 
 
-        public Tuple<Image<Bgr, byte>, int> SegmentionWatershed(int threshmin, bool flat, TypeImage check)
+        public Tuple<Image<Bgr, byte>, VectorOfVectorOfPoint> SegmentionWatershed(int threshmin, bool flat, TypeImage check)
         {
             CreateImag();
             //Mat3b src = imread("path_to_image");
@@ -169,11 +169,11 @@ namespace MongoDBControll.lib
             }
             ImageViewer.Show(this.jpg);
 
-            return Tuple.Create(this.jpg, contours.Size);
+            return Tuple.Create(this.jpg, contours);
 
         }
 
-        public Tuple<Image<Bgr, byte>, int> SegmentionWatershedRAW(int threshmin, bool flat, TypeImage check)
+        public Tuple<Image<Bgr, byte>, VectorOfVectorOfPoint> SegmentionWatershedRAW(int threshmin, bool flat, TypeImage check)
         {
             CreateImag();
             //Mat3b src = imread("path_to_image");
@@ -244,7 +244,7 @@ namespace MongoDBControll.lib
             }
             ImageViewer.Show(this.jpg);
 
-            return Tuple.Create(this.jpg, contours.Size);
+            return Tuple.Create(this.jpg, contours);
 
         }
 

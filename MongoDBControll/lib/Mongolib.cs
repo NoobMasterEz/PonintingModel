@@ -15,12 +15,12 @@ namespace MongoDBControll.lib
     {
         private readonly MongoClient db_client;
         private string _namedatabase;
-        private GaiaInfo type;
-        public string NAMECOLLECTION = "GDR2";
+        private GaiaInfo11 type;
+        private string _NAMECOLLECTION;
         public Mongolib(string data, string namedatabase)
         {
             // call Gaia info 
-            type = new GaiaInfo();
+            type = new GaiaInfo11();
            
             //Construct
 
@@ -29,6 +29,14 @@ namespace MongoDBControll.lib
             this.Namedatabase = namedatabase;
         }
 
+        public string NAMECOLLECTION
+        {
+            /**
+             *  :create fucation getter and setter for private variable
+             */
+            get { return this._NAMECOLLECTION; }
+            set { this._NAMECOLLECTION = value; }
+        }
         public string Namedatabase
         {
             /**
@@ -45,21 +53,24 @@ namespace MongoDBControll.lib
         /// <param name="collection"></param>
         /// <param name="filter"></param>
         /// <returns> type list </returns>
-        private static IFindFluent<GaiaInfo, GaiaInfo> Get(IMongoCollection<GaiaInfo> collection, FilterDefinition<GaiaInfo> filter)
+        private static IFindFluent<GaiaInfo11, GaiaInfo11> Get(IMongoCollection<GaiaInfo11> collection, FilterDefinition<GaiaInfo11> filter)
         {
             
             return collection.Find(filter); // get result from filter 
         }
-
-        private static IMongoCollection<GaiaInfo> CollectDatabase(string NAMECOLLECTION, IMongoDatabase data)
+   
+        private static IMongoCollection<GaiaInfo11> CollectCollection(string NAMECOLLECTION, IMongoDatabase data)
         {
-            return data.GetCollection<GaiaInfo>(NAMECOLLECTION); // get collection 
+
+            
+            return data.GetCollection<GaiaInfo11>(NAMECOLLECTION); // get collection
+            
         }
 
-        private static FilterDefinition<GaiaInfo> FilterGeoMultiple(int x, int y, double r)
-        {
-            return Builders<GaiaInfo>.Filter.And(Builders<GaiaInfo>.Filter.GeoWithinCenterSphere(u => u.location, x, y, r), Builders<GaiaInfo>.Filter.GeoWithinCenterSphere(u => u.phot_g_mean_mag, x, y, r));
-        }
+        //private static FilterDefinition<GaiaInfo11> FilterGeoMultiple(int x, int y, double r)
+        //{
+        //    return Builders<GaiaInfo11>.Filter.And(Builders<GaiaInfo11>.Filter.GeoWithinCenterSphere(u => u.Location, x, y, r), Builders<GaiaInfo11>.Filter.GeoWithinCenterSphere(u => u.phot_g_mean_mag, x, y, r));
+        //}
         
         /// <summary>
         /// 
@@ -68,9 +79,9 @@ namespace MongoDBControll.lib
         /// <param name="y">long</param>
         /// <param name="r"> radius</param>
         /// <returns>type FilterDefinition</returns>
-        private static FilterDefinition<GaiaInfo> FilterGeo(int x, int y, double r)
+        private static FilterDefinition<GaiaInfo11> FilterGeo(int x, int y, double r)
         {
-            return Builders<GaiaInfo>.Filter.GeoWithinCenterSphere(u => u.location, x, y, r); // fuction filter center sh
+            return Builders<GaiaInfo11>.Filter.GeoWithinCenterSphere(u => u.Location, x, y, r); // fuction filter center sh
         }
 
         /// <summary>
@@ -81,9 +92,9 @@ namespace MongoDBControll.lib
         /// <param name="x2">x hight</param>
         /// <param name="y2">y hight </param>
         /// <returns> type filterDefinition </returns>
-        private static FilterDefinition<GaiaInfo> FilterBox(double x1, double y1, double x2, double y2)
+        private static FilterDefinition<GaiaInfo11> FilterBox(double x1, double y1, double x2, double y2)
         {
-            return Builders<GaiaInfo>.Filter.GeoWithinBox(u => u.location, x1, y1, x2, y2); // fuction filter box 
+            return Builders<GaiaInfo11>.Filter.GeoWithinBox(u => u.Location, x1, y1, x2, y2); // fuction filter box 
         }
 
         /// <summary>
@@ -93,9 +104,9 @@ namespace MongoDBControll.lib
         /// <param name="pos2"></param>
         /// <param name="distand"></param>
         /// <returns></returns>
-        private static FilterDefinition<GaiaInfo> FilterNear(GeoJsonPoint<GeoJson2DGeographicCoordinates> point, double distand)
+        private static FilterDefinition<GaiaInfo11> FilterNear(GeoJsonPoint<GeoJson2DGeographicCoordinates> point, double distand)
         {
-            return Builders<GaiaInfo>.Filter.Near(u => u.location, point, distand);
+            return Builders<GaiaInfo11>.Filter.Near(u => u.Location, point, distand);
         }
 
         /// <summary>
@@ -103,9 +114,9 @@ namespace MongoDBControll.lib
         /// </summary>
         /// <param name="polygon"></param>
         /// <returns></returns>
-        private static FilterDefinition<GaiaInfo> FilterPolygon(double[,] polygon)
+        private static FilterDefinition<GaiaInfo11> FilterPolygon(double[,] polygon)
         {
-            return Builders<GaiaInfo>.Filter.GeoWithinPolygon(u => u.location, polygon);
+            return Builders<GaiaInfo11>.Filter.GeoWithinPolygon(u => u.Location, polygon);
 
         }
 
@@ -113,9 +124,9 @@ namespace MongoDBControll.lib
         /// 
         /// </summary>
         /// <returns></returns>
-        private IMongoDatabase Database()
+        private  IMongoDatabase Database()
         {
-            
+           
             return this.db_client.GetDatabase(Namedatabase); //get data base
         }
 
@@ -137,7 +148,7 @@ namespace MongoDBControll.lib
         /// <param name="y">longitude</param>
         /// <param name="r">radius</param>
         /// <returns> type list </returns>
-        public IFindFluent<GaiaInfo, GaiaInfo> GeocenterSpherestring(int x ,int y , double r)
+        public IFindFluent<GaiaInfo11, GaiaInfo11> GeocenterSpherestring(int x ,int y , double r)
         {
             /**
              * : putdata to argument name of collection and x , y, r .
@@ -150,8 +161,9 @@ namespace MongoDBControll.lib
             IMongoDatabase data = Database();
 
             Console.WriteLine(string.Format("[Status {0}] -> GeocenterSpherestring Connect in data base name {1} ", CheckConnected(data), NAMECOLLECTION)); // check in connect to database 
-            IMongoCollection<GaiaInfo> collection = CollectDatabase(NAMECOLLECTION, data);
-            FilterDefinition<GaiaInfo> filter = FilterGeo(x, y, r);
+            IMongoCollection<GaiaInfo11> collection = CollectCollection(NAMECOLLECTION, data);
+            FilterDefinition<GaiaInfo11> filter = FilterGeo(x, y, r);
+
             return Get(collection, filter);
            
 
@@ -165,26 +177,26 @@ namespace MongoDBControll.lib
             /// <param name="y">longitude</param>
             /// <param name="r">radius</param>
             /// <returns> type list </returns>
-            public IFindFluent<GaiaInfo, GaiaInfo> GeocenterSpherestringMuti( int x, int y, double r)
-            {
-                /**
-                 * : putdata to argument name of collection and x , y, r .
-                 * : check data is connected from database .
-                 * : filter GeoWithCenter. 
-                 * : return type list  .
-                 *
-                 */
+            //public IFindFluent<GaiaInfo11, GaiaInfo11> GeocenterSpherestringMuti( int x, int y, double r)
+            //{
+            //    /**
+            //     * : putdata to argument name of collection and x , y, r .
+            //     * : check data is connected from database .
+            //     * : filter GeoWithCenter. 
+            //     * : return type list  .
+            //     *
+            //     */
 
-                IMongoDatabase data = Database();
+            //    IMongoDatabase data = Database();
 
-                Console.WriteLine(string.Format("[Status {0}] -> GeocenterSpherestringMuti Connect in data base name {1} ", CheckConnected(data), NAMECOLLECTION)); // check in connect to database 
-                IMongoCollection<GaiaInfo> collection = CollectDatabase(NAMECOLLECTION, data);
-                FilterDefinition<GaiaInfo> filter = FilterGeoMultiple(x, y, r);
-                return Get(collection, filter);
+            //    Console.WriteLine(string.Format("[Status {0}] -> GeocenterSpherestringMuti Connect in data base name {1} ", CheckConnected(data), NAMECOLLECTION)); // check in connect to database 
+            //    IMongoCollection<GaiaInfo11> collection = CollectCollection(NAMECOLLECTION, data);
+            //    FilterDefinition<GaiaInfo11> filter = FilterGeoMultiple(x, y, r);
+            //    return Get(collection, filter);
 
 
 
-            }
+            //}
 
 
 
@@ -196,31 +208,31 @@ namespace MongoDBControll.lib
             /// <param name="x2">x high </param>
             /// <param name="y2">y high </param>
             /// <returns>type object</returns>
-            public IFindFluent<GaiaInfo, GaiaInfo> GeowithBox( double x1,double y1,double x2,double y2)
+            public IFindFluent<GaiaInfo11, GaiaInfo11> GeowithBox( double x1,double y1,double x2,double y2)
         {
             IMongoDatabase data = Database();
             Console.WriteLine(string.Format("[Status {0}] -> GeowithBox Connect in data base name {1} ", CheckConnected(data), NAMECOLLECTION)); // check in connect to database 
-            IMongoCollection<GaiaInfo> collection = CollectDatabase(NAMECOLLECTION, data);
-            FilterDefinition<GaiaInfo> filter = FilterBox(x1, y1, x2, y2);
+            IMongoCollection<GaiaInfo11> collection = CollectCollection(NAMECOLLECTION, data);
+            FilterDefinition<GaiaInfo11> filter = FilterBox(x1, y1, x2, y2);
             return Get(collection, filter);
         }
 
-        public IFindFluent<GaiaInfo, GaiaInfo> GeoPolygon( double [,] polygon)
+        public IFindFluent<GaiaInfo11, GaiaInfo11> GeoPolygon( double [,] polygon)
         {
             IMongoDatabase data = Database();
             Console.WriteLine(string.Format("[Status {0}] -> GeoPolygon Connect in data base name {1} ", CheckConnected(data), NAMECOLLECTION)); // check in connect to database 
-            IMongoCollection<GaiaInfo> collection = CollectDatabase(NAMECOLLECTION, data);
-            FilterDefinition<GaiaInfo> filter = FilterPolygon(polygon);
+            IMongoCollection<GaiaInfo11> collection = CollectCollection(NAMECOLLECTION, data);
+            FilterDefinition<GaiaInfo11> filter = FilterPolygon(polygon);
             return Get(collection,filter);
         }
 
-        public IFindFluent<GaiaInfo, GaiaInfo> Near(int pos1, int pos2, double distend)
+        public IFindFluent<GaiaInfo11, GaiaInfo11> Near(int pos1, int pos2, double distend)
         {
             IMongoDatabase data = Database();
             Console.WriteLine(string.Format("[Status {0}] -> Near Connect in data base name {1} ", CheckConnected(data), NAMECOLLECTION)); // check in connect to database 
             GeoJsonPoint<GeoJson2DGeographicCoordinates> point = GeoJson.Point(GeoJson.Geographic(pos1, pos2));
-            IMongoCollection<GaiaInfo> collection = CollectDatabase(NAMECOLLECTION, data);
-            FilterDefinition<GaiaInfo> filter=FilterNear(point, distend);
+            IMongoCollection<GaiaInfo11> collection = CollectCollection(NAMECOLLECTION, data);
+            FilterDefinition<GaiaInfo11> filter=FilterNear(point, distend);
             return Get(collection, filter);
         }
 

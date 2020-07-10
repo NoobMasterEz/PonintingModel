@@ -37,12 +37,19 @@ namespace MongoDBControll.lib
             test.SegmentionWatershed(7, false,TypeImage.JPG);
             test.SegmentionWatershedRAW(7, false, TypeImage.RAW);
             double[] resultCal;
+            
             foreach (var item in result.ToList())
             {
                 resultCal=MethodStaticFomula.StandardCoordi(Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()), 4.2620940334, 0.5893976884);
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("[INFO](Query From Database) RA={0}", Convert.ToDouble(item.RA.ToString()));
                 Console.WriteLine("[INFO](Query From Database) DEC={0}", Convert.ToDouble(item.Dec.ToString()));
-                Console.WriteLine("[INFO](Calculat)={0},{1}",resultCal[0], resultCal[0]);
+                Console.ResetColor();
+            
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("[INFO](Calculat)={0},{1}",resultCal[0], resultCal[1]);
+                Console.ResetColor();
             }
             #if DEBUG
                         Console.WriteLine("Press enter to close...");

@@ -90,14 +90,18 @@ namespace MongoDBControll.lib
                     if (key.Equals("OBJCTRA"))
                     {
                         this._objra = Convert.ToDouble(m.Value);
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("[INFO]" + key + "=" + headcard.Value + headcard.Comment);
                         Console.WriteLine("[INFO][FROMCOMMENT]" + Convert.ToDouble(m.Value));
+                        Console.ResetColor();
                     }
                     else if (key.Equals("OBJCTDEC"))
                     {
                         this._objdec = Convert.ToDouble(m.Value);
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("[INFO]" + key + "=" + headcard.Value + headcard.Comment);
                         Console.WriteLine("[INFO][FROMCOMMENT]" + Convert.ToDouble(m.Value));
+                        Console.ResetColor();
                     }
 
                     

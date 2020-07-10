@@ -159,12 +159,16 @@ namespace MongoDBControll.lib
             for (int i = 0; i < contours.Size; i++)
             {
                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
+                double[] result = MethodStaticFomula.InvertStandardCoordi(r.X, r.Y, 244.2, 33.77);
                 if ((r.Width > 3 && r.Height > 3) && (r.Width < 50 && r.Height < 50))
                 {
                     this.jpg.Draw(r, new Bgr(Color.Green));
                     //CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
                 }
-
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("[INFO](Invert)={0},{1}", result[0], result[1]);
+                Console.ResetColor();
 
             }
             ImageViewer.Show(this.jpg);
@@ -233,13 +237,18 @@ namespace MongoDBControll.lib
 
             for (int i = 0; i < contours.Size; i++)
             {
+                
                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
+                double[] result=MethodStaticFomula.InvertStandardCoordi(r.X,r.Y,244.2,33.77);
                 if ((r.Width > 3 && r.Height > 3) && (r.Width < 50 && r.Height < 50))
                 {
                     ///this.jpg.Draw(r, new Bgr(Color.Red));
                     CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2, new MCvScalar(0, 0, 255));
                 }
-
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("[INFO](Invert)={0},{1}", result[0], result[1]);
+                Console.ResetColor();
 
             }
             ImageViewer.Show(this.jpg);

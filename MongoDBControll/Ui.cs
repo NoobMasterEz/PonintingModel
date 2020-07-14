@@ -99,6 +99,7 @@ namespace MongoDBControll.lib
             imageBox4.Image = result.Item4;
             imageBox5.Image = result.Item1;
             label1.Text = Convert.ToString(result.Item5.Size);
+            label2.Text = Convert.ToString(centerRa2000GuessRads.NumPlate);
             GC.Collect();
         }
 
@@ -106,7 +107,10 @@ namespace MongoDBControll.lib
         {
 
         }
+        private void label2_Click(object sender, EventArgs e)
+        {
 
+        }
         private void label1_Click(object sender, EventArgs e)
         {
 
@@ -122,5 +126,12 @@ namespace MongoDBControll.lib
         {
 
         }
+
+        private void Ui_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        
     }
 }

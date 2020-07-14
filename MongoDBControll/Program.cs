@@ -27,19 +27,19 @@ namespace MongoDBControll.lib
         {
 
             ////plant wap Ex
-            ImageLib.ImageType imageType = new ImageLib.ImageType();
-            ImageLib.OpenAnyImageType(Fits, ref imageType); //file fit path
+            //ImageLib.ImageType imageType = new ImageLib.ImageType();
+            //ImageLib.OpenAnyImageType(Fits, ref imageType); //file fit path
 
-            MatchLib.PlateListType centerRa2000GuessRads = new MatchLib.PlateListType()
-            {
-                Px = imageType.N1,
-                Py = imageType.N2,
-                XSize = (double)imageType.N1 * 1 / 206264.806,
-                YSize = (double)imageType.N2 * 1 / 206264.806,
-                HaveStartingCoords = true
-            };
+            //MatchLib.PlateListType centerRa2000GuessRads = new MatchLib.PlateListType()
+            //{
+            //    Px = imageType.N1,
+            //    Py = imageType.N2,
+            //    XSize = (double)imageType.N1 * 1 / 206264.806,
+            //    YSize = (double)imageType.N2 * 1 / 206264.806,
+            //    HaveStartingCoords = true
+            //};
 
-            MatchLib.ExtractStars(ref imageType, ref centerRa2000GuessRads);
+            //MatchLib.ExtractStars(ref imageType, ref centerRa2000GuessRads);
             //for(int i =0; i<=  centerRa2000GuessRads.NumPlate; i++)
             //{
             //    Console.WriteLine("[{0},{1}],", centerRa2000GuessRads.Plate[i].Xcen, centerRa2000GuessRads.Plate[i].Ycen);

@@ -51,6 +51,7 @@
             this.imageBox4 = new Emgu.CV.UI.ImageBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.imageBox5 = new Emgu.CV.UI.ImageBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -165,7 +166,7 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Location = new System.Drawing.Point(765, 40);
+            this.groupBox3.Location = new System.Drawing.Point(913, 40);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(175, 47);
             this.groupBox3.TabIndex = 7;
@@ -178,9 +179,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(77, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 17);
+            this.label1.Size = new System.Drawing.Size(16, 17);
             this.label1.TabIndex = 0;
-            this.label1.Text = "label1";
+            this.label1.Text = "0";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // process1
@@ -249,9 +250,20 @@
             this.imageBox5.TabStop = false;
             this.imageBox5.Click += new System.EventHandler(this.imageBox5_Click);
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(1152, 57);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(46, 17);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "label2";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
             // Ui
             // 
             this.ClientSize = new System.Drawing.Size(1386, 951);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
@@ -262,6 +274,7 @@
             this.Controls.Add(this.menuStrip2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Ui";
+            this.Load += new System.EventHandler(this.Ui_Load);
             this.menuStrip2.ResumeLayout(false);
             this.menuStrip2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
@@ -302,5 +315,6 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private Emgu.CV.UI.ImageBox imageBox5;
         private Emgu.CV.UI.ImageBox imageBox4;
+        private System.Windows.Forms.Label label2;
     }
 }

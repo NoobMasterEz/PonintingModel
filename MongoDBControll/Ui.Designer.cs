@@ -43,14 +43,25 @@
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.process1 = new System.Diagnostics.Process();
+            this.imageBox3 = new Emgu.CV.UI.ImageBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.imageBox4 = new Emgu.CV.UI.ImageBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.imageBox5 = new Emgu.CV.UI.ImageBox();
             this.menuStrip2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).BeginInit();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox3)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox4)).BeginInit();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox5)).BeginInit();
             this.SuspendLayout();
             // 
             // fileToolStripMenuItem
@@ -75,7 +86,7 @@
             this.fileToolStripMenuItem1});
             this.menuStrip2.Location = new System.Drawing.Point(0, 0);
             this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.Size = new System.Drawing.Size(992, 30);
+            this.menuStrip2.Size = new System.Drawing.Size(1386, 28);
             this.menuStrip2.TabIndex = 1;
             this.menuStrip2.Text = "menuStrip2";
             // 
@@ -85,7 +96,7 @@
             this.openToolStripMenuItem1,
             this.exitToolStripMenuItem1});
             this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
-            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(46, 26);
+            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem1.Text = "File";
             // 
             // openToolStripMenuItem1
@@ -106,7 +117,7 @@
             // 
             this.imageBox1.Location = new System.Drawing.Point(32, 114);
             this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(399, 381);
+            this.imageBox1.Size = new System.Drawing.Size(399, 350);
             this.imageBox1.TabIndex = 2;
             this.imageBox1.TabStop = false;
             this.imageBox1.Click += new System.EventHandler(this.imageBox1_Click);
@@ -115,7 +126,7 @@
             // 
             this.groupBox1.Location = new System.Drawing.Point(9, 93);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(442, 402);
+            this.groupBox1.Size = new System.Drawing.Size(442, 386);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Original";
@@ -124,26 +135,26 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.imageBox2);
-            this.groupBox2.Location = new System.Drawing.Point(520, 93);
+            this.groupBox2.Location = new System.Drawing.Point(457, 93);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(441, 402);
+            this.groupBox2.Size = new System.Drawing.Size(450, 386);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Result";
+            this.groupBox2.Text = "Morphology";
             this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // imageBox2
             // 
             this.imageBox2.Location = new System.Drawing.Point(23, 21);
             this.imageBox2.Name = "imageBox2";
-            this.imageBox2.Size = new System.Drawing.Size(397, 381);
+            this.imageBox2.Size = new System.Drawing.Size(397, 350);
             this.imageBox2.TabIndex = 2;
             this.imageBox2.TabStop = false;
             this.imageBox2.Click += new System.EventHandler(this.imageBox2_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(457, 279);
+            this.button1.Location = new System.Drawing.Point(32, 47);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(57, 28);
             this.button1.TabIndex = 6;
@@ -172,27 +183,6 @@
             this.label1.Text = "label1";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(116, 57);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(98, 21);
-            this.checkBox1.TabIndex = 8;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(12, 58);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(98, 21);
-            this.checkBox2.TabIndex = 8;
-            this.checkBox2.Text = "checkBox1";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
             // process1
             // 
             this.process1.StartInfo.Domain = "";
@@ -203,11 +193,68 @@
             this.process1.StartInfo.UserName = "";
             this.process1.SynchronizingObject = this;
             // 
+            // imageBox3
+            // 
+            this.imageBox3.Location = new System.Drawing.Point(6, 21);
+            this.imageBox3.Name = "imageBox3";
+            this.imageBox3.Size = new System.Drawing.Size(449, 350);
+            this.imageBox3.TabIndex = 2;
+            this.imageBox3.TabStop = false;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.imageBox3);
+            this.groupBox4.Location = new System.Drawing.Point(913, 93);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(461, 386);
+            this.groupBox4.TabIndex = 9;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Dilate";
+            this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add(this.imageBox4);
+            this.groupBox5.Location = new System.Drawing.Point(9, 489);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(441, 450);
+            this.groupBox5.TabIndex = 10;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "DistanceTransform";
+            // 
+            // imageBox4
+            // 
+            this.imageBox4.Location = new System.Drawing.Point(23, 20);
+            this.imageBox4.Name = "imageBox4";
+            this.imageBox4.Size = new System.Drawing.Size(398, 424);
+            this.imageBox4.TabIndex = 2;
+            this.imageBox4.TabStop = false;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.imageBox5);
+            this.groupBox6.Location = new System.Drawing.Point(457, 489);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(450, 450);
+            this.groupBox6.TabIndex = 11;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Result";
+            // 
+            // imageBox5
+            // 
+            this.imageBox5.Location = new System.Drawing.Point(23, 21);
+            this.imageBox5.Name = "imageBox5";
+            this.imageBox5.Size = new System.Drawing.Size(397, 423);
+            this.imageBox5.TabIndex = 2;
+            this.imageBox5.TabStop = false;
+            this.imageBox5.Click += new System.EventHandler(this.imageBox5_Click);
+            // 
             // Ui
             // 
-            this.ClientSize = new System.Drawing.Size(992, 507);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
+            this.ClientSize = new System.Drawing.Size(1386, 951);
+            this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox2);
@@ -222,6 +269,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.imageBox2)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox3)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox4)).EndInit();
+            this.groupBox6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.imageBox5)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -241,8 +294,13 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
         private System.Diagnostics.Process process1;
+        private Emgu.CV.UI.ImageBox imageBox3;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private Emgu.CV.UI.ImageBox imageBox5;
+        private Emgu.CV.UI.ImageBox imageBox4;
     }
 }

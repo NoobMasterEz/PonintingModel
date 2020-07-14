@@ -14,21 +14,28 @@ using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 
+using AstroNETLib;
+using SRSLib;
+
 namespace MongoDBControll.lib
 {
     public partial class Ui : Form
     {
         private EmguCv objemgucv;
         private Image<Bgr, byte> iplImage;
+        private ImageLib.ImageType imageType;
+        private MatchLib.PlateListType centerRa2000GuessRads;
         public Ui()
         {
             InitializeComponent();
             
+
         }
         private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Application.Exit();
             GC.Collect();
+
         }
         private void openToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -40,8 +47,21 @@ namespace MongoDBControll.lib
                 if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     this.objemgucv = new EmguCv(dlg.FileName);
-                    this.iplImage = CvInvoke.Imread(dlg.FileName).ToImage<Bgr, Byte>();
+                    this.iplImage = this.objemgucv.ImageJPG;
                     imageBox1.Image = this.iplImage;
+                    imageType = new ImageLib.ImageType();
+                    ImageLib.OpenAnyImageType(dlg.FileName, ref imageType); //file fit path
+
+                    centerRa2000GuessRads = new MatchLib.PlateListType()
+                    {
+                        Px = imageType.N1,
+                        Py = imageType.N2,
+                        XSize = (double)imageType.N1 * 1 / 206264.806,
+                        YSize = (double)imageType.N2 * 1 / 206264.806,
+                        HaveStartingCoords = false
+                    };
+
+                    MatchLib.ExtractStars(ref imageType, ref centerRa2000GuessRads);
                     // Create a new Bitmap object from the picture file on disk,
                     // and assign that to the PictureBox.Image property
 
@@ -73,10 +93,12 @@ namespace MongoDBControll.lib
         private void button1_Click(object sender, EventArgs e)
         {
            
-            Tuple<Image<Bgr, byte>, VectorOfVectorOfPoint> result = this.objemgucv.SegmentionWatershed(7,true,TypeImage.RAW);
-            imageBox2.Image = result.Item1;
-          
-            label1.Text = Convert.ToString(result.Item2);
+            Tuple<Image<Bgr, byte>, Image<Gray, byte>,Image<Gray, byte>,Image<Gray, byte>, VectorOfVectorOfPoint> result = this.objemgucv.SegmentionWatershed(7,false,TypeImage.JPG, centerRa2000GuessRads);
+            imageBox2.Image = result.Item2;
+            imageBox3.Image = result.Item3;
+            imageBox4.Image = result.Item4;
+            imageBox5.Image = result.Item1;
+            label1.Text = Convert.ToString(result.Item5.Size);
             GC.Collect();
         }
 
@@ -90,7 +112,13 @@ namespace MongoDBControll.lib
 
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+
+        private void groupBox4_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void imageBox5_Click(object sender, EventArgs e)
         {
 
         }

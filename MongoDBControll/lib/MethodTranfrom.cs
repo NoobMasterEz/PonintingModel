@@ -47,23 +47,34 @@ namespace MongoDBControll.lib
 
         public static double[] InvertStandardCoordi(double x, double y, double ra, double dec)
         {
+            dec = dec * (Math.PI / 180);
+            ra = ra * (Math.PI / 180);
+
             double afa = ra + (Math.Atan(x / (Math.Cos(dec) - (y * Math.Sin(dec)))));
-            double bata = Math.Asin((Math.Sin(dec) + (y * Math.Cos(dec))) / (Math.Sqrt(1 + Math.Pow(x,2.0) + Math.Pow( y,2.0))));
-            return new double[] { afa,bata};
+            double bata = Math.Asin(((Math.Sin(dec) + (y * Math.Cos(dec))) / (Math.Sqrt(1 + Math.Pow(x, 2.0) + Math.Pow(y, 2.0)))));
+            return new double[] { afa * (180 / Math.PI), bata * (180 / Math.PI) };
         }
+
         public static double[] StandardCoordi(double ra, double dec, double objra, double objdec)
         {
             /* α, right ascension
              * δ, declination
              */
-            double btm = (Math.Sin(objdec) * Math.Sin(dec) + (Math.Cos(objdec-dec  )));
-            double x = (Math.Cos(dec) * Math.Sin(objra-ra))/btm;
+            double btm = (Math.Sin(objdec) * Math.Sin(dec) + (Math.Cos(objdec - dec)));
+            double x = (Math.Cos(dec) * Math.Sin(objra - ra)) / btm;
             double y = ((Math.Cos(objdec) * Math.Sin(dec)) - (Math.Sin(objdec) * Math.Cos(dec) * Math.Cos(objdec - dec))) / btm;
-            
-            return new double[] { x, y };  
+
+            return new double[] { x * (180 / Math.PI), y * (180 / Math.PI) };
+        }
+
+        public static double[] Trafrom2Polar(double X, double Y, int weight, int height)
+        { 
+            return new double[] { X-(0.5*weight),(-Y+(0.5*height))};
         }
     }
 
+    }
 
-}
+
+
 

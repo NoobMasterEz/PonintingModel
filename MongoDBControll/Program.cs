@@ -10,13 +10,14 @@ using MongoDB.Driver;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using System.Windows.Forms;
+using SRSLib;
 
 namespace MongoDBControll.lib
 {
     class Program
     {
         private const string Namefile = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_04_03T12.51.52.125Z_B.jpg";
-        private const string Namefilfits = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_06_15T07.35.12.937Z_B.fits";
+        private const string Namefilfits = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_07_10T09.15.45.839Z_Blue.wcs.fits";
 
         public static string Namefile1 => Namefile;
         public static string Fits => Namefilfits;
@@ -24,6 +25,28 @@ namespace MongoDBControll.lib
         [STAThread]
         static void Main(string[] args)
         {
+
+            ////plant wap Ex
+            ImageLib.ImageType imageType = new ImageLib.ImageType();
+            ImageLib.OpenAnyImageType(Fits, ref imageType); //file fit path
+
+            MatchLib.PlateListType centerRa2000GuessRads = new MatchLib.PlateListType()
+            {
+                Px = imageType.N1,
+                Py = imageType.N2,
+                XSize = (double)imageType.N1 * 1 / 206264.806,
+                YSize = (double)imageType.N2 * 1 / 206264.806,
+                HaveStartingCoords = true
+            };
+
+            MatchLib.ExtractStars(ref imageType, ref centerRa2000GuessRads);
+            //for(int i =0; i<=  centerRa2000GuessRads.NumPlate; i++)
+            //{
+            //    Console.WriteLine("[{0},{1}],", centerRa2000GuessRads.Plate[i].Xcen, centerRa2000GuessRads.Plate[i].Ycen);
+            //}
+
+            /*
+             
             //Data Base 
             Mongolib mongoLib = new Mongolib("mongodb://127.0.0.1:27017","GaiaData");
             mongoLib.NAMECOLLECTION = "GDR2Mag11";
@@ -41,6 +64,8 @@ namespace MongoDBControll.lib
             foreach (var item in result.ToList())
             {
                 resultCal=MethodStaticFomula.StandardCoordi(Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()), 4.2620940334, 0.5893976884);
+                
+                //Astro.RaDec(Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()),2020);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("[INFO](Query From Database) RA={0}", Convert.ToDouble(item.RA.ToString()));
                 Console.WriteLine("[INFO](Query From Database) DEC={0}", Convert.ToDouble(item.Dec.ToString()));
@@ -51,11 +76,13 @@ namespace MongoDBControll.lib
                 Console.WriteLine("[INFO](Calculat)={0},{1}",resultCal[0], resultCal[1]);
                 Console.ResetColor();
             }
+            */
+            /*
             #if DEBUG
                         Console.WriteLine("Press enter to close...");
                         Console.ReadLine();
             #endif
-
+            */
             /*
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -72,9 +99,9 @@ namespace MongoDBControll.lib
                 ts.Milliseconds);
             Console.WriteLine("[INFO]->RunTime " + elapsedTime);
             */
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Ui());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Ui());
 
 
         }

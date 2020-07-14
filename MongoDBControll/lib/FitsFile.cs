@@ -25,7 +25,8 @@ namespace MongoDBControll.lib
         public ImageHDU basichdu;
         private double _objra { get; set; }
         private double _objdec { get; set; }
-
+        
+        private DateTime _objdate { get; set; }
         public FitsFile(string pathfitsfile)
         {
             this.path = pathfitsfile;
@@ -87,6 +88,7 @@ namespace MongoDBControll.lib
                     HeaderCard headcard = (HeaderCard)entry.Value;
                     String key = headcard.Key;
                     Match m = Regex.Match(headcard.Comment, @"\d+(?:\.\d+)?");
+                    
                     if (key.Equals("OBJCTRA"))
                     {
                         this._objra = Convert.ToDouble(m.Value);
@@ -95,7 +97,7 @@ namespace MongoDBControll.lib
                         Console.WriteLine("[INFO][FROMCOMMENT]" + Convert.ToDouble(m.Value));
                         Console.ResetColor();
                     }
-                    else if (key.Equals("OBJCTDEC"))
+                    if (key.Equals("OBJCTDEC"))
                     {
                         this._objdec = Convert.ToDouble(m.Value);
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -103,8 +105,18 @@ namespace MongoDBControll.lib
                         Console.WriteLine("[INFO][FROMCOMMENT]" + Convert.ToDouble(m.Value));
                         Console.ResetColor();
                     }
+                    if(key.Equals("DATE"))
+                    {
+                        
+                        this._objdate = Convert.ToDateTime(headcard.Value);
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("[INFO]" + key + "=" + this._objdate.Year + headcard.Comment);
+                        Console.WriteLine("[INFO][FROMCOMMENT]" + Convert.ToDateTime(headcard.Value));
+                        Console.ResetColor();
+                    }
 
-                    
+
+
                 }
                 catch (Exception ex)
                 {
@@ -126,8 +138,9 @@ namespace MongoDBControll.lib
             get { return this._objdec; }
 
         }
+  
 
-        public static void GetUpperAndLower8Bit(Matrix<Byte> CVMat, out Byte LowerValue, out Byte UpperValue, Double LowerPercen, Double UpperPercen)
+       public static void GetUpperAndLower8Bit(Matrix<Byte> CVMat, out Byte LowerValue, out Byte UpperValue, Double LowerPercen, Double UpperPercen)
         {
             int DataLength = CVMat.Rows * CVMat.Cols;
             Byte[] Data = new Byte[DataLength];

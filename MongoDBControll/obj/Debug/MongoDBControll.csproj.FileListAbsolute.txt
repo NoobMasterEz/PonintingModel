@@ -104,3 +104,5 @@ C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\Accord.MachineLearning.
 C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\DotImaging.BitmapInterop.xml
 C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\DotImaging.GenericImage.xml
 C:\Users\specter\Desktop\Mongo\MongoDBControll\obj\Debug\MongoDBControll.Properties.Resources.resources
+C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\AstroNETLib.dll
+C:\Users\specter\Desktop\Mongo\MongoDBControll\bin\Debug\SRSLib.dll

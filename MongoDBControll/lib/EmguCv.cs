@@ -149,13 +149,13 @@ namespace MongoDBControll.lib
             //ImageViewer.Show(opening);
             Image<Gray, byte> sure_bg = opening.Dilate(3);
             Image<Gray, float> dist_transform = new Image<Gray, float>(opening.Width, opening.Height);
-            CvInvoke.DistanceTransform(opening, dist_transform, null, DistType.L2, 5);
+            CvInvoke.DistanceTransform(opening, dist_transform, null, DistType.L2, 3);
 
 
 
             dist_transform.MinMax(out min, out max, out pmin, out pmax);
             //Console.WriteLine(max[0]);
-            CvInvoke.Threshold(dist_transform, thresh2, max[0] * 0.1, 255, 0);
+            CvInvoke.Threshold(dist_transform, thresh2, max[0]*0.05, 255, 0);
             Image<Gray, Byte> dist_8u = thresh2.Convert<Gray, Byte>();
             //ImageViewer.Show(dist_8u);
             

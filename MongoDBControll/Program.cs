@@ -16,11 +16,11 @@ namespace MongoDBControll.lib
 {
     class Program
     {
-        private const string Namefile = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_04_03T12.51.52.125Z_B.jpg";
-        private const string Namefilfits = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_07_10T09.15.45.839Z_Blue.wcs.fits";
+        ////private const string Namefile = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_04_03T12.51.52.125Z_B.jpg";
+        ////private const string Namefilfits = @"C:\\Users\\specter\\Desktop\\Mongo\\MongoDBControll\\lib\\image\2020_07_10T09.15.45.839Z_Blue.wcs.fits";
 
-        public static string Namefile1 => Namefile;
-        public static string Fits => Namefilfits;
+        //public static string Namefile1 => Namefile;
+        //public static string Fits => Namefilfits;
 
         [STAThread]
         static void Main(string[] args)

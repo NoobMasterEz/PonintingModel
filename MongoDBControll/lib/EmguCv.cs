@@ -176,9 +176,9 @@ namespace MongoDBControll.lib
                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
                 double[] result_trafrom =MethodStaticFomula.Trafrom2Polar(r.X, r.Y, 2048, 2048); // tranfrom2 polar
                 double[] result = MethodStaticFomula.InvertStandardCoordi(result_trafrom[0],result_trafrom[1], 244.2, 33.77); // invert2position 
-                
+
                 //Console.WriteLine("x={0}, y={1}", p[0], p[1]);
-               
+                Console.WriteLine(MatchLib.FindNearestExtracted(r.X, r.Y, centerRa2000GuessRads));
                 this.jpg.Draw(r, new Bgr(Color.Red));
                     
                     //CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));

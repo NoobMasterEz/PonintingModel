@@ -58,6 +58,7 @@ namespace MongoDBControll.lib
                     newimage[i][j] = (ushort)(value[j] + 32767);
                 }
 
+
             }
 
 

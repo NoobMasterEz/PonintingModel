@@ -21,6 +21,7 @@ namespace MongoDBControll.lib
 {
     public partial class Ui : Form
     {
+        
         private EmguCv objemgucv;
         private Image<Bgr, byte> iplImage;
         private ImageLib.ImageType imageType;
@@ -51,7 +52,7 @@ namespace MongoDBControll.lib
                     imageBox1.Image = this.iplImage;
                     imageType = new ImageLib.ImageType();
                     ImageLib.OpenAnyImageType(dlg.FileName, ref imageType); //file fit path
-
+                    MatchLib.SetCatalogLocation(@"G:\UCAC4\Kepler\");
                     centerRa2000GuessRads = new MatchLib.PlateListType()
                     {
                         Px = imageType.N1,
@@ -60,8 +61,13 @@ namespace MongoDBControll.lib
                         YSize = (double)imageType.N2 * 1 / 206264.806,
                         HaveStartingCoords = false
                     };
-
+                    
                     MatchLib.ExtractStars(ref imageType, ref centerRa2000GuessRads);
+                    MatchLib.PlateMatch(ref centerRa2000GuessRads);
+                    
+                    //MatchLib.PlateMatch(ref centerRa2000GuessRads);
+                    //MatchLib.PlateMatchImage(ref imageType, ref centerRa2000GuessRads);
+
                     // Create a new Bitmap object from the picture file on disk,
                     // and assign that to the PictureBox.Image property
 
@@ -132,6 +138,9 @@ namespace MongoDBControll.lib
 
         }
 
-        
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

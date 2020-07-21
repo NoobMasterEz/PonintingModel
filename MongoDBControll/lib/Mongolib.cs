@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GeoJsonObjectModel;
+using SRSLib;
 
 namespace MongoDBControll.lib
 {
@@ -79,7 +80,7 @@ namespace MongoDBControll.lib
         /// <param name="y">long</param>
         /// <param name="r"> radius</param>
         /// <returns>type FilterDefinition</returns>
-        private static FilterDefinition<GaiaInfo11> FilterGeo(int x, int y, double r)
+        private static FilterDefinition<GaiaInfo11> FilterGeo(double x, double y, double r)
         {
             return Builders<GaiaInfo11>.Filter.GeoWithinCenterSphere(u => u.Location, x, y, r); // fuction filter center sh
         }
@@ -120,6 +121,7 @@ namespace MongoDBControll.lib
 
         }
 
+
         /// <summary>
         /// 
         /// </summary>
@@ -148,7 +150,7 @@ namespace MongoDBControll.lib
         /// <param name="y">longitude</param>
         /// <param name="r">radius</param>
         /// <returns> type list </returns>
-        public IFindFluent<GaiaInfo11, GaiaInfo11> GeocenterSpherestring(int x ,int y , double r)
+        public IFindFluent<GaiaInfo11, GaiaInfo11> GeocenterSpherestring(double x ,double y , double r)
         {
             /**
              * : putdata to argument name of collection and x , y, r .
@@ -234,6 +236,25 @@ namespace MongoDBControll.lib
             IMongoCollection<GaiaInfo11> collection = CollectCollection(NAMECOLLECTION, data);
             FilterDefinition<GaiaInfo11> filter=FilterNear(point, distend);
             return Get(collection, filter);
+        }
+
+        public void ComparData(IFindFluent<GaiaInfo11, GaiaInfo11> data, MatchLib.PlateListType centerRa2000GuessRads)
+        {
+            Console.WriteLine(data.ToList().Count);
+
+
+            foreach (var item in data.ToList())
+            {
+
+                //Astro.RaDec(Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()),2020);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[{0},{1}],", Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()));
+                //Console.WriteLine("[INFO](Query From Database) RA={0}", Convert.ToDouble(item.RA.ToString()));
+                //Console.WriteLine("[INFO](Query From Database) DEC={0}", Convert.ToDouble(item.Dec.ToString()));
+                Console.ResetColor();
+
+              
+            }
         }
 
         public void DebugConsoleWite()

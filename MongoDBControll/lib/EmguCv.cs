@@ -29,16 +29,16 @@ namespace MongoDBControll.lib
         private Image<Emgu.CV.Structure.Gray, byte> thresholdimage;
         private Image<Gray, byte> gray;
         private Image<Gray, byte> thresh;
-
+        public FitsFile FitFiles;
         public EmguCv(string file) 
         {
             
-            FitsFile test = new FitsFile(file);
-            MethodTranfrom  Method= new MethodTranfrom(test.GenerateImage());    
+            FitFiles = new FitsFile(file);
+            MethodTranfrom  Method= new MethodTranfrom(FitFiles.GenerateImage());    
             this.fomula = new MethodStaticFomula();
-            this.raw8bit = Method.Convert1628(); // Create Raw
+            //this.raw8bit = Method.Convert1628(); // Create Raw
             this.jpg = Genarate2Jpg(Method.GetRaw()); // Create JPGE
-            this.raw = this.raw8bit.Mat.ToImage<Bgr, byte>();
+            //this.raw = this.raw8bit.Mat.ToImage<Bgr, byte>();
 
         }
 
@@ -79,7 +79,7 @@ namespace MongoDBControll.lib
         {
 
             this.grayjpg = this.jpg.Convert<Gray, Byte>();
-            this.grayraw = this.raw.Convert<Gray, Byte>();
+            //this.grayraw = this.raw.Convert<Gray, Byte>();
 
 
         }
@@ -103,7 +103,7 @@ namespace MongoDBControll.lib
         }
 
 
-        public Tuple<Image<Bgr, byte>, Image<Gray, byte>, Image<Gray, byte>, Image<Gray, byte>, VectorOfVectorOfPoint> SegmentionWatershed(int threshmin, bool flat, TypeImage check, MatchLib.PlateListType centerRa2000GuessRads)
+        public Tuple<Image<Bgr, byte>, Image<Gray, byte>, Image<Gray, byte>, Image<Gray, byte>, VectorOfVectorOfPoint,Tuple<double,double>> SegmentionWatershed(int threshmin, bool flat, TypeImage check, MatchLib.PlateListType centerRa2000GuessRads)
         {
             CreateImag();
             //Mat3b src = imread("path_to_image");
@@ -174,21 +174,21 @@ namespace MongoDBControll.lib
             for (int i = 0; i < contours.Size; i++)
             {
                 Rectangle r = CvInvoke.BoundingRectangle(contours[i]);
-                double[] result_trafrom =MethodStaticFomula.Trafrom2Polar(r.X, r.Y, 2048, 2048); // tranfrom2 polar
-                double[] result = MethodStaticFomula.InvertStandardCoordi(result_trafrom[0],result_trafrom[1], 244.2, 33.77); // invert2position 
+                //double[] result_trafrom =MethodStaticFomula.Trafrom2Polar(r.X, r.Y, 2048, 2048); // tranfrom2 polar
+                //double[] result = MethodStaticFomula.InvertStandardCoordi(result_trafrom[0],result_trafrom[1], 244.2, 33.77); // invert2position 
 
                 //Console.WriteLine("x={0}, y={1}", p[0], p[1]);
-                Console.WriteLine(MatchLib.FindNearestExtracted(r.X, r.Y, centerRa2000GuessRads));
+                //Console.WriteLine(MatchLib.FindNearestExtracted(r.X, r.Y, centerRa2000GuessRads));
                 this.jpg.Draw(r, new Bgr(Color.Red));
                     
                     //CvInvoke.Circle(this.jpg, this.fomula.CenterOfCircle(r), r.Width / 2,new MCvScalar(0,0,255));
                 
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.ForegroundColor = ConsoleColor.White;
-                //Console.WriteLine("[INFO](Invert)={0},{1}", result[0], result[1]);
-                Console.WriteLine("[{0},{1}],", result[0], result[1]);
+                //Console.BackgroundColor = ConsoleColor.DarkBlue;
+                //Console.ForegroundColor = ConsoleColor.White;
+                ////Console.WriteLine("[INFO](Invert)={0},{1}", result[0], result[1]);
+                //Console.WriteLine("[{0},{1}],", result[0], result[1]);
 
-                Console.ResetColor();
+                //Console.ResetColor();
 
             }
             for(int k=0;k<= centerRa2000GuessRads.NumPlate;k++)
@@ -196,13 +196,19 @@ namespace MongoDBControll.lib
                 
                 
                 CvInvoke.Circle(this.jpg, new Point(Convert.ToInt32(centerRa2000GuessRads.Plate[k].Xcen), Convert.ToInt32(centerRa2000GuessRads.Plate[k].Ycen)), 3, new Bgr(Color.Green).MCvScalar);
-
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                //Console.WriteLine("[INFO](Invert)={0},{1}", result[0], result[1]);
+                Console.WriteLine("[{0},{1}],", centerRa2000GuessRads.Plate[k].RARad * (180/Math.PI), centerRa2000GuessRads.Plate[k].DecRad * (180 / Math.PI));
+                
+                Console.ResetColor();
             }
+           
             //Image<Bgr, byte> dbg = new Image<Bgr, byte>(marker.Cols, marker.Rows);
             //CvInvoke.CvtColor(opening, dbg, ColorConversion.Gray2Bgr);
             //CvInvoke.Watershed(dbg, marker);
 
-            return Tuple.Create(this.jpg, opening, sure_bg, dist_8u, contours);
+            return Tuple.Create(this.jpg, opening, sure_bg, dist_8u, contours,this.FitFiles.CalculatRADEC());
                                                                                 
         }
 

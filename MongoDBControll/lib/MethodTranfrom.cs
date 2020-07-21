@@ -27,13 +27,13 @@ namespace MongoDBControll.lib
         public Matrix<int> Convert1628()
         {
             Matrix<int> result = new Matrix<int>(this.image.Rows, this.image.Cols);
-            for (int i = 0; i < this.image.Cols; i++)
+            Parallel.For(0, this.image.Cols, (i) =>
             {
                 for (int j = 0; j < this.image.Rows; j++)
                 {
-                    result.Data[i, j] = (int) this.image.Data[i, j] / 255;
+                    result.Data[i, j] = (int)this.image.Data[i, j] / 255;
                 }
-            }
+            });
 
             return result;
         }

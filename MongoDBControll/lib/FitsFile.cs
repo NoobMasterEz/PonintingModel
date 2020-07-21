@@ -62,20 +62,22 @@ namespace MongoDBControll.lib
             }
 
 
-            for (int i = 0; i < colum; i++)
-            {
-                for (int j = 0; j < row; j++)
-                {
-                    this.result.Data[i, j] = newimage[i][j];
+            Parallel.For(0, colum, (i) =>
+              {
+                  for (int j = 0; j < row; j++)
+                  {
+                      this.result.Data[i, j] = newimage[i][j];
 
-                }
-            }
-            CalculatRADEC();
+                  }
+              }
+            );
+            
+            
             this.fits.Close();
             return this.result;
 
         }
-        private void CalculatRADEC()
+        public Tuple<double,double> CalculatRADEC()
         {
             Header hdr =this.basichdu.Header;
             Cursor iter = hdr.GetCursor();
@@ -123,11 +125,12 @@ namespace MongoDBControll.lib
                 {
                     Console.WriteLine("ERROR KEY:"+ex.Message);
                 }
+                
             }
-            
-            
 
 
+
+            return Tuple.Create(this._objra, this._objdec);
         }
         public double GetRA 
         {

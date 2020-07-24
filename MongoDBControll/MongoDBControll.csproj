@@ -162,7 +162,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="lib\Accord.cs" />
+    <Compile Include="lib\JsonAstro.cs" />
     <Compile Include="lib\TypeImage.cs" />
     <Compile Include="lib\MethodTranfrom.cs" />
     <Compile Include="lib\FitsFile.cs" />
@@ -201,6 +201,9 @@
     <EmbeddedResource Include="Ui.resx">
       <DependentUpon>Ui.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Json\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\MongoDB.Libmongocrypt.1.0.0\build\MongoDB.Libmongocrypt.targets" Condition="Exists('packages\MongoDB.Libmongocrypt.1.0.0\build\MongoDB.Libmongocrypt.targets')" />

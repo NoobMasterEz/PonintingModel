@@ -238,23 +238,33 @@ namespace MongoDBControll.lib
             return Get(collection, filter);
         }
 
-        public void ComparData(IFindFluent<GaiaInfo11, GaiaInfo11> data, MatchLib.PlateListType centerRa2000GuessRads)
+        public JsonAstro ComparData(IFindFluent<GaiaInfo11, GaiaInfo11> data, JsonAstro databasejson)
         {
             Console.WriteLine(data.ToList().Count);
-
-
+            databasejson.name = "DB";
+            databasejson.numplate = data.ToList().Count;
+            databasejson.weight = databasejson.height = 0;
+            double[][] ServicePoint = new double[data.ToList().Count + 1][];
+            int k = 0;
             foreach (var item in data.ToList())
             {
+                if(k <= data.ToList().Count)
+                {
+                    //Astro.RaDec(Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()),2020);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    ServicePoint[k] = new double[2] { Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()) };
 
-                //Astro.RaDec(Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()),2020);
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[{0},{1}],", Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()));
-                //Console.WriteLine("[INFO](Query From Database) RA={0}", Convert.ToDouble(item.RA.ToString()));
-                //Console.WriteLine("[INFO](Query From Database) DEC={0}", Convert.ToDouble(item.Dec.ToString()));
-                Console.ResetColor();
+                    Console.WriteLine("[{0},{1}],", Convert.ToDouble(item.RA.ToString()), Convert.ToDouble(item.Dec.ToString()));
+                    //Console.WriteLine("[INFO](Query From Database) RA={0}", Convert.ToDouble(item.RA.ToString()));
+                    //Console.WriteLine("[INFO](Query From Database) DEC={0}", Convert.ToDouble(item.Dec.ToString()));
+                    Console.ResetColor();
+                }
 
+                k++;
               
             }
+            databasejson.data = ServicePoint;
+            return databasejson;
         }
 
         public void DebugConsoleWite()

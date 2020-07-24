@@ -19,7 +19,11 @@ namespace MongoDBControll.lib
             this.image = imageinput;
         }
 
-        
+
+        /// <summary>
+        /// this funtion return RAW image 
+        /// </summary>
+        /// <returns>Matrix<ushort> </returns>
         public Matrix<ushort> GetRaw()
         {
             return this.image;
@@ -45,6 +49,14 @@ namespace MongoDBControll.lib
         public Point CenterOfCircle(Rectangle rect) => new Point(rect.Left + rect.Width / 2,
                              rect.Top + rect.Height / 2);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="ra"></param>
+        /// <param name="dec"></param>
+        /// <returns>double[]</returns>
         public static double[] InvertStandardCoordi(double x, double y, double ra, double dec)
         {
             dec = dec * (Math.PI / 180);
@@ -55,6 +67,14 @@ namespace MongoDBControll.lib
             return new double[] { afa * (180 / Math.PI), bata * (180 / Math.PI) };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ra"></param>
+        /// <param name="dec"></param>
+        /// <param name="objra"></param>
+        /// <param name="objdec"></param>
+        /// <returns></returns>
         public static double[] StandardCoordi(double ra, double dec, double objra, double objdec)
         {
             /* α, right ascension
@@ -67,6 +87,14 @@ namespace MongoDBControll.lib
             return new double[] { x * (180 / Math.PI), y * (180 / Math.PI) };
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="weight"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
         public static double[] Trafrom2Polar(double X, double Y, int weight, int height)
         { 
             return new double[] { X-(0.5*weight),(-Y+(0.5*height))};
